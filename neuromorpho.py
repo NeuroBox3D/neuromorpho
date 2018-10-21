@@ -34,7 +34,7 @@ def get_swc_by_neuron_index(neuronIndex):
   url = "%s/api/neuron/id/%i" % (NEUROMORPHO_URL, neuronIndex)
   req = Request(url)
   response = urlopen(req)
-  neuronName = json.loads(response.read().decode('utf-8'))['neuron_name']
+  neuronName = json.loads(response.read().decode("utf-8"))['neuron_name']
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
   html = urlopen(url).read()
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
