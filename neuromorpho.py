@@ -1,5 +1,12 @@
 """ Making use of the  REST API (NeuroMorpho.org v7) to query the database """
-import urllib2
+
+try:
+  from urllib2 import urlopen
+  from urllib2 import Request
+except ImportError:
+  from urllib.request import urlopen
+  from urllib.request import Request
+
 import re
 import json
 import base64
@@ -10,8 +17,8 @@ NEUROMORPHO_URL = "http://neuromorpho.org"
 def check_api_health():
   """ Checks if the REST API is available """
   url = "http://neuromorpho.org/api/health"
-  req = urllib2.Request(url)
-  response = urllib2.urlopen(req)
+  req = Request(url)
+  response = urlopen(req)
   if (json.loads(response.read())['status'] != "UP"):
       print("REST API not available")
       return False
@@ -25,16 +32,16 @@ def get_swc_by_neuron_index(neuronIndex):
   """
   if (not check_api_health()): return
   url = "%s/api/neuron/id/%i" % (NEUROMORPHO_URL, neuronIndex)
-  req = urllib2.Request(url)
-  response = urllib2.urlopen(req)
+  req = Request(url)
+  response = urlopen(req)
   neuronName = json.loads(response.read())['neuron_name']
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
-  html = urllib2.urlopen(url).read()
+  html = urlopen(url).read()
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
-     response = urllib2.urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
+     response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
      open(fileName, 'w').write(response.read())
 
 def get_swc_by_neuron_name(neuronName):

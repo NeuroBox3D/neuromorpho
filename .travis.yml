@@ -6,9 +6,6 @@ matrix:
     - os: osx
       osx_image: xcode10
 
-python:
-  - "3.4"
-
 script: 
   - chmod +x get_swc.py
   - ./get_swc.py
