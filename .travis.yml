@@ -4,6 +4,13 @@ matrix:
   include:
     - os: linux
       python: 2.7
+    - os: osx
+      language: generic
+      env: PYTHON=3.4
+
+before_install:
+  - chmod +x ./.travis/install.sh
+  - ./.travis/install.sh
 
 script: 
   - chmod +x get_swc.py
