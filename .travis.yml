@@ -1,0 +1,13 @@
+language: python
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+      osx_image: xcode10
+
+python:
+  - "2.7"
+  - "3.4"
+
+script: ./get_swc.py
