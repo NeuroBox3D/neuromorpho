@@ -3,8 +3,10 @@ language: python
 matrix:
   include:
     - os: linux
+      python: 2.7
+      python: 3.4
     - os: osx
-      osx_image: xcode10
+      python: 3.4
 
 script: 
   - chmod +x get_swc.py
