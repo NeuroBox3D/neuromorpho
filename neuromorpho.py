@@ -13,7 +13,7 @@ def check_api_health():
   req = urllib2.Request(url)
   response = urllib2.urlopen(req)
   if (json.loads(response.read())['status'] != "UP"):
-      print "REST API not available"
+      print("REST API not available")
       return False
   return True
 
