@@ -9,8 +9,9 @@ import re
 import json
 import base64
 
-# "constant" URL to the database
+# "constants"
 NEUROMORPHO_URL = "http://neuromorpho.org"
+MAX_NEURONS_PER_PAGE = 500
 
 def check_api_health():
   """ Checks if the REST API is available """
@@ -43,12 +44,41 @@ def get_swc_by_neuron_index(neuronIndex):
      open(fileName, 'w').write(response.read())
 
 def get_swc_by_neuron_name(neuronName):
-  """ Download the SWC file specified by the neuron's name """
-  if (not check_api_health()): return
-  pass
+  """ Download the SWC file specified by the neuron's name
 
-def get_all_swcs_by_region(regionName):
-  """ Download all SWCs specified by a region name """
-  # http://neuromorpho.org/api//neuron/select?q=brain_region:neocortex&size=500&page=1
+    Keyword arguments:
+    neuronIndex -- the neuron index in the database
+  """
   if (not check_api_health()): return
-  pass
+  url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
+  html = urlopen(url).read()
+  p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
+  m = re.findall(p, html)
+  for match in m:
+     fileName = match.replace("%20", " ").split("/")[-1]
+     response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
+     open(fileName, 'w').write(response.read())
+
+def get_swc_by_brain_region(brainRegion, neuronPages=-1, neuronsPerPage=-1):
+  """ Download all SWCs specified by a region name
+
+    Keyword arguments:
+    brainRegion -- the brain region
+    neuronPages -- how many pages of the neurons we want (-1 means all pages)
+    neuronsPerPage -- how many neurons per page (-1 means maximum per page)
+  """
+  if (not check_api_health()): return
+  numNeurons = (neuronsPerPage != -1 and neuronsPerPage < MAX_NEURONS_PER_PAGE) and neuronsPerPage
+  url = "%s/api/neuron/select?q=brain_region:%s&size=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons)
+  req = Request(url)
+  response = urlopen(req)
+  totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
+  numNeuronPages = (neuronPages != -1 and neuronPages < totalPages) and neuronPages
+  for page in xrange(0, numNeuronPages):
+    url = "%s/api/neuron/select?q=brain_region:%s&size=%i&page=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
+    req = Request(url)
+    response = urlopen(req)
+    neurons = json.loads(response.read().decode("utf-8"))
+    numNeurons = len(neurons['_embedded']['neuronResources'])
+    for neuron in xrange(0, numNeurons):
+      get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
