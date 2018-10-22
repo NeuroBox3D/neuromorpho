@@ -68,12 +68,12 @@ def get_swc_by_brain_region(brainRegion, neuronPages=-1, neuronsPerPage=-1):
     neuronsPerPage -- how many neurons per page (-1 means maximum per page)
   """
   if (not check_api_health()): return
-  numNeurons = (neuronsPerPage != -1 and neuronsPerPage < MAX_NEURONS_PER_PAGE) and neuronsPerPage
+  numNeurons = (neuronsPerPage != -1 and neuronsPerPage < MAX_NEURONS_PER_PAGE) or neuronsPerPage
   url = "%s/api/neuron/select?q=brain_region:%s&size=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons)
   req = Request(url)
   response = urlopen(req)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
-  numNeuronPages = (neuronPages != -1 and neuronPages < totalPages) and neuronPages
+  numNeuronPages = (neuronPages != -1 and neuronPages < totalPages) or neuronPages
   for page in xrange(0, numNeuronPages):
     url = "%s/api/neuron/select?q=brain_region:%s&size=%i&page=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
     req = Request(url)
