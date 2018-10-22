@@ -9,4 +9,4 @@ environment:
       PYTHON_ARCH: 32
 
 build_script:
-  - CALL get_swc.py
+  - CALL test_get_swc.py

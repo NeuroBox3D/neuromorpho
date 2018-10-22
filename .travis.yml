@@ -13,5 +13,5 @@ before_install:
   - ./.travis/install.sh
 
 script: 
-  - chmod +x get_swc.py
-  - ./get_swc.py
+  - chmod +x test_get_swc.py
+  - ./test_get_swc.py

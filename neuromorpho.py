@@ -1,11 +1,9 @@
-""" Making use of the  REST API (NeuroMorpho.org v7) to query the database """
-
+""" Making use of the REST API (NeuroMorpho.org v7) to query the database """
+# python v2 or v3
 try:
-  from urllib2 import urlopen
-  from urllib2 import Request
+  from urllib2 import urlopen, Request
 except ImportError:
-  from urllib.request import urlopen
-  from urllib.request import Request
+  from urllib.request import urlopen, Request
 
 import re
 import json
