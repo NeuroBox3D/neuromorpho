@@ -8,14 +8,20 @@ parser.add_argument('--neurons', required=False, type=int, help="Count of neuron
 parser.add_argument('--pages', required=False, type=int, help="Number of pages of neurons", metavar="P")
 parser.add_argument('--name', required=False, type=str, help="Name of neuron", metavar="N")
 parser.add_argument('--index', required=False, type=int, help="Index of neuron", metavar="I")
+parser.add_argument('--archive', required=False, type=str, help="Archive", metavar="A")
 args = parser.parse_args()
 
 if (args.region):
   numNeurons = (args.neurons != -1 and args.neurons) or -1
   numPages = (args.pages != -1 and args.neurons) or -1
   brainRegion = (args.region != -1 and args.region) or "neocortex"
-  get_swc_by_brain_region(brainRegion, numNeurons, numPages)
-if (not args.region and ((args.index != None) ^ (args.name != None))):
+  get_swc_by_brain_region(brainRegion, numPages, numNeurons)
+elif (args.archive):
+  numNeurons = (args.neurons != -1 and args.neurons) or -1
+  numPages = (args.pages != -1 and args.pages) or -1
+  archiveName = (args.archive != -1 and args.archive) or "Smith"
+  get_swc_by_archive_name(archiveName, numPages, numNeurons)
+elif (not args.region and ((args.index != None) ^ (args.name != None))):
   if (args.index):
       get_swc_by_neuron_index(args.index)
   if (args.name):

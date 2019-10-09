@@ -1,19 +1,22 @@
 # Neuromorpho
-Making use of the  REST API (NeuroMorpho.org v7) to query the database.
+Making use of the REST API (NeuroMorpho.org v7) to query the database.
 
 ## Features
 - Get SWC file by neuron ID
 - Get SWC file by neuron name
-- Get SWC file by brain region
+- Get SWC files by brain region
+- Get SWC files by archive name
 
 ## Usage:
-- `python get_swc.py` will output some help method
-- `python get_swc.py --region neocortex` will download all swc to current dir
-- `python get_swc.py --region neocortex --neurons 10` will download the first 10 neurons
-- `python get_swc.py --name cnic_001` will download the specified neuron by name
-- `python get_swc.py --index 1` will download the specified neuron by index
+- `python get_SWC.py` will output some help information
+- `python get_SWC.py --region neocortex` will download all SWC files from the region *neocortex* to current dir
+- `python get_SWC.py --region neocortex --neurons 10 --pages 1` will download the first 10 SWC files of the region *neocortex* to current dir
+- `python get_SWC.py --region neocortex --neurons 10 --pages 2` will download the first 20 SWC files of the region *neocortex* to current dir
+- `python get_SWC.py --name cnic_001` will download the specified SWC file by name to current dir
+- `python get_SWC.py --index 1` will download the specified SWC file by index to current dir
+- `python get_SWC.py --archive Smith` will download all SWC files of given archive name *Smith* to current dir
 
-Note region cannot specified with name or index, and either name or index can be specified.
+Note that region cannot be specified with name or index, and either name or index can be specified.
 
 ## CI
 - OSX/Linux (Python v3.4/v2.7) [![OSX/Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
