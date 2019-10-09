@@ -5,7 +5,7 @@ try:
 except ImportError:
   from urllib.request import urlopen, Request
 
-import rs, json, base64, sys
+import re, json, base64, sys
 
 # pseudo-constants
 NEUROMORPHO_URL = "http://neuromorpho.org"
@@ -64,7 +64,7 @@ def get_swc_by_neuron_name(neuronName):
   """ Download the SWC file specified by the neuron's name
 
     Keyword arguments:
-    neuronIndex -- the neuron index in the database
+    neuronName -- the neuron index in the database
   """
   if (not check_api_health()): return
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
