@@ -29,15 +29,17 @@ def validate_response_code(response):
 
   sys.exit()
 
+
 def check_api_health():
   """ Checks if the REST API is available """
   url = "http://neuromorpho.org/api/health"
   req = Request(url)
   response = urlopen(req)
   if (json.loads(response.read())['status'].decode('utf-8') != "UP"):
-      print("REST API not available")
+      print("REST API not available.")
       return False
   return True
+
 
 def get_swc_by_neuron_index(neuronIndex):
   """Download a neuron by index and store it into a SWC file
@@ -59,6 +61,7 @@ def get_swc_by_neuron_index(neuronIndex):
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
      open(fileName, 'w').write(response.read())
+
 
 def get_swc_by_neuron_name(neuronName):
   """ Download the SWC file specified by the neuron's name
@@ -95,6 +98,11 @@ def get_swc_by_brain_region(brainRegion, neuronPages=-1, neuronsPerPage=-1):
   validate_response_code(response)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = neuronPages if (neuronPages != -1 and neuronPages < totalPages) else totalPages
+  # if more neurons than supported by API is requested (500 neurons) multiple pages need to be retrieved
+  if (neuronsPerPage > MAX_NEURONS_PER_PAGE):
+      numNeuronPages = neuronsPerPage / MAX_NEURONS_PER_PAGE
+  # make sure not to get more pages than available
+  numNeuronPages = min(totalPages, numNeuronPages)
   for page in xrange(0, numNeuronPages):
     url = "%s/api/neuron/select?q=brain_region:%s&size=%i&page=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
     req = Request(url)
@@ -103,6 +111,7 @@ def get_swc_by_brain_region(brainRegion, neuronPages=-1, neuronsPerPage=-1):
     numNeurons = len(neurons['_embedded']['neuronResources'])
     for neuron in xrange(0, numNeurons):
       get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+
 
 def get_swc_by_archive_name(archiveName, neuronPages=-1, neuronsPerPage=-1):
   """ Download all SWCs specified by an archive name
@@ -123,6 +132,11 @@ def get_swc_by_archive_name(archiveName, neuronPages=-1, neuronsPerPage=-1):
   validate_response_code(response)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = neuronPages if (neuronPages != -1 and neuronPages < totalPages) else totalPages
+  # if more neurons than supported by API is requested (500 neurons) multiple pages need to be retrieved
+  if (neuronsPerPage > MAX_NEURONS_PER_PAGE):
+      numNeuronPages = neuronsPerPage / MAX_NEURONS_PER_PAGE
+  # make sure not to get more pages than available
+  numNeuronPages = min(totalPages, numNeuronPages)
   for page in xrange(0, numNeuronPages):
     url = "%s/api/neuron/select?q=archive:%s&size=%i&page=%i" %(NEUROMORPHO_URL, archiveName, numNeurons, page)
     req = Request(url)
