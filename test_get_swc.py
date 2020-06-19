@@ -14,12 +14,12 @@ class TestGetSWCMethod(unittest.TestCase):
     self.assertTrue(num_lines == 1281, "SWC file incomplete!")
 
   def test_get_swc_by_brain_region(self):
-    get_swc_by_brain_region("neocortex", 1, 1)
+    get_swc_by_brain_region("neocortex", 1)
     num_lines = sum(1 for line in open('cnic_001.CNG.swc'))
     self.assertTrue(num_lines == 1281, "SWC file incomplete!")
 
   def test_get_swc_by_archive_name(self):
-    get_swc_by_archive_name("Smith", 1, 1)
+    get_swc_by_archive_name("Smith", 1)
     num_lines = sum(1 for line in open('0-2.CNG.swc'))
     self.assertTrue(num_lines == 494, "SWC file incomplete!")
 
