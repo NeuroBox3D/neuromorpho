@@ -61,7 +61,10 @@ def get_neuron_pages(numNeurons, totalPages):
   return min(totalPages, numNeurons / MAX_NEURONS_PER_PAGE if numNeurons > MAX_NEURONS_PER_PAGE else 1)
 
 
-def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons):
+def get_swc_by_filter_rule_for_search_by_index(filterStringList, searchTerm, index):
+  get_swc_by_filter_rule_for_search(filterStringList, searchTerm, -1, index)
+
+def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons, index=-1):
   """ Downloads n neurons by filterString and stores as SWC files
   
   Keyword arguments:
@@ -71,7 +74,7 @@ def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons):
   """
   if (not check_api_health()): return
 
-  url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm)
+  url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm.replace("=", ":"))
 
   pairs = []
   if (len(filterStringList) == 1): 
@@ -87,15 +90,25 @@ def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons):
   validate_response_code(response)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = get_neuron_pages(numNeurons, totalPages)
+  count = 0
   for page in xrange(0, numNeuronPages):
     url = url + "&size=%i&page=%i" % (numNeurons, page)
     req = Request(url)
     response = urlopen(req)
     neurons = json.loads(response.read().decode("utf-8"))
     numNeurons = len(neurons['_embedded']['neuronResources'])
+    count = 0
     for neuron in xrange(0, numNeurons):
-      get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+      # get each file
+      if index == -1: get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
+      # get only file with index in this html view
+      if (neuron-count == index):
+        get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+        return neurons['_embedded']['neuronResources'][neuron]['neuron_name']
+    # increase count here
+    count = neuron + numNeurons
+  
 
 
 def get_swc_by_neuron_index(neuronIndex):
