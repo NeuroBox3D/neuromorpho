@@ -8,6 +8,13 @@ Making use of the REST API (NeuroMorpho.org v7) to query the database.
 - Get SWC files by archive name
 
 ## Usage:
+Most useful usage is probably the following to specify a search term and additional filters:
+
+`python get_swc.py --filter "cell_type=pyramidal" --neurons 10 --search "brain_region:neocortex" --filter "archive=Allen Cell Types"`
+
+This will search for the brain region *neocortex* and then filter the result by the *cell type* pyramidal and *archive* Allen Cell Types.
+The first 10 neurons stored in *NeuroMorpho.org* database will then be downloaded and stored as **SWC** files.
+
 - `python get_SWC.py` will output some help information
 - `python get_SWC.py --region neocortex` will download all SWC files from the region *neocortex* to current dir
 - `python get_SWC.py --region neocortex --neurons 10` will download the first 10 SWC files of the region *neocortex* to current dir

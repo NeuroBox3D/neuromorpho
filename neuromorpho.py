@@ -61,6 +61,43 @@ def get_neuron_pages(numNeurons, totalPages):
   return min(totalPages, numNeurons / MAX_NEURONS_PER_PAGE if numNeurons > MAX_NEURONS_PER_PAGE else 1)
 
 
+def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons):
+  """ Downloads n neurons by filterString and stores as SWC files
+  
+  Keyword arguments:
+  filterString -- the filter string as key value pairs
+  searchTerm -- the search term
+  n -- number of neurons
+  """
+  if (not check_api_health()): return
+
+  url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm)
+
+  pairs = []
+  if (len(filterStringList) == 1): 
+    filterStringList.replace(" ", "%20")
+    pairs = filterStringList.split("=")
+  else:
+     for filterString in filterStringList:
+        pairs = pairs + [fq.replace(" ", "%20").split("=") for fq in filterString]
+
+  url = url + "&".join(["fq=%s:%s" % (k, v) for (k, v) in pairs])
+  req = Request(url)
+  response = urlopen(req)
+  validate_response_code(response)
+  totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
+  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
+  for page in xrange(0, numNeuronPages):
+    url = url + "&size=%i&page=%i" % (numNeurons, page)
+    req = Request(url)
+    response = urlopen(req)
+    neurons = json.loads(response.read().decode("utf-8"))
+    numNeurons = len(neurons['_embedded']['neuronResources'])
+    for neuron in xrange(0, numNeurons):
+      get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+
+
+
 def get_swc_by_neuron_index(neuronIndex):
   """Download a neuron by index and store it into a SWC file
 

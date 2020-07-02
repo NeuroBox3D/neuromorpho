@@ -8,6 +8,8 @@ parser.add_argument('--neurons', required=False, type=int, help="Count of neuron
 parser.add_argument('--name', required=False, type=str, help="Name of neuron", metavar="N")
 parser.add_argument('--index', required=False, type=int, help="Index of neuron", metavar="I")
 parser.add_argument('--archive', required=False, type=str, help="Archive name", metavar="A")
+parser.add_argument('--filters', required=False, type=str, help="One or multuple filters", metavar="[FILTER]", action='append', nargs=1)
+parser.add_argument('--search', required=False, type=str, help="Search term", metavar="S")
 args = parser.parse_args()
 
 if (args.region):
@@ -23,5 +25,7 @@ elif (not args.region and ((args.index != None) ^ (args.name != None))):
       get_swc_by_neuron_index(args.index)
   if (args.name):
       get_swc_by_neuron_name(args.name)
+elif (args.filters and args.search and args.neurons):
+    get_swc_by_filter_rule_for_search(args.filters, args.search, args.neurons)
 else:
   parser.print_help()
