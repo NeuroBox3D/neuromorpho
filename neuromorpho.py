@@ -12,7 +12,11 @@ NEUROMORPHO_URL = "http://neuromorpho.org"
 MAX_NEURONS_PER_PAGE = 500
 
 def validate_response_code(response):
-  """ Checks response code from JSON request and print warning then exits """
+  """ Checks response code from JSON request and print warning then exits 
+
+  Keyword arguments:
+  response -- response of the issued JSON request
+  """
   code = response.getcode()
   # success
   if code == 200: return
@@ -30,7 +34,10 @@ def validate_response_code(response):
 
 
 def check_api_health():
-  """ Checks if the REST API is available """
+  """ Checks if the REST API is available 
+
+  Returns true if API is available or false otherwise
+  """
   url = "http://neuromorpho.org/api/health"
   req = Request(url)
   response = urlopen(req)
@@ -51,7 +58,8 @@ def get_num_neurons(numNeurons):
 
 def get_neuron_pages(numNeurons, totalPages):
   """
-    If more neurons (>500) than supported by API are requested,
+    Get the number of neuron pages. API handles up to 500 neurons per page.
+    If more neurons than supported by the NeuroMorpho API (> 500), then
     multiple pages need to be retrieved, otherwise one page is retrieved.
 
     Keyword arguments:
@@ -61,17 +69,7 @@ def get_neuron_pages(numNeurons, totalPages):
   return min(totalPages, numNeurons / MAX_NEURONS_PER_PAGE if numNeurons > MAX_NEURONS_PER_PAGE else 1)
 
 
-def get_swc_by_filter_rule_for_search_by_index(filterStringList, searchTerm, index):
-  """ Downloads the neuron by index which matches filter criteria 
-  
-  Keyword arguments:
-  filterStringList -- the filter string as key value pairs
-  searchTerm -- the search term
-  index -- index of neuron of interest
-  """
-  get_swc_by_filter_rule_for_search(filterStringList, searchTerm, -1, index)
-
-def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons, index=-1):
+def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeurons, index=-1):
   """ Downloads n neurons by filterString and stores as SWC files
   
   Keyword arguments:
@@ -116,6 +114,15 @@ def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons, 
     # increase count here
     count = neuron + numNeurons
   
+def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
+  """ Downloads the neuron by index which matches filter criteria and search  term
+  
+  Keyword arguments:
+  filterStringList -- the filter string as key value pairs
+  searchTerm -- the search term
+  index -- index of neuron of interest
+  """
+  get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)
 
 
 def get_swc_by_neuron_index(neuronIndex):

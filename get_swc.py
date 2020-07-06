@@ -22,9 +22,9 @@ elif (args.archive):
   get_swc_by_archive_name(archiveName, numNeurons)
 elif (args.search):
     if args.index:
-       print(get_swc_by_filter_rule_for_search(args.filters, args.search, 500, args.index))
+       print(get_swc_by_filter_rule_for_search_term(args.filters, args.search, 500, args.index))
     else:
-       print(get_swc_by_filter_rule_for_search(args.filters, args.search, args.neurons, -1))
+       print(get_swc_by_filter_rule_for_search_term(args.filters, args.search, args.neurons, -1))
 elif (not args.region and ((args.index != None) ^ (args.name != None))):
   if (args.index):
       get_swc_by_neuron_index(args.index)
