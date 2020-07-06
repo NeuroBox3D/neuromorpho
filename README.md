@@ -1,5 +1,6 @@
 # Neuromorpho.org API
 Making use of the REST API (NeuroMorpho.org v7) to query the database for neurons and download these as files in the SWC format.
+Note that the files are downloaded to your current working directory: `pwd`.
 
 ## Features
 - Get neurons matching a search term and additional filters (Usage Example 1 and 2)
