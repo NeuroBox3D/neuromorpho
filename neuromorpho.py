@@ -62,6 +62,13 @@ def get_neuron_pages(numNeurons, totalPages):
 
 
 def get_swc_by_filter_rule_for_search_by_index(filterStringList, searchTerm, index):
+  """ Downloads the neuron by index which matches filter criteria 
+  
+  Keyword arguments:
+  filterStringList -- the filter string as key value pairs
+  searchTerm -- the search term
+  index -- index of neuron of interest
+  """
   get_swc_by_filter_rule_for_search(filterStringList, searchTerm, -1, index)
 
 def get_swc_by_filter_rule_for_search(filterStringList, searchTerm, numNeurons, index=-1):
