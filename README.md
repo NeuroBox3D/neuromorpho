@@ -8,6 +8,23 @@ Making use of the REST API (NeuroMorpho.org v7) to query the database.
 - Get SWC files by archive name
 
 ## Usage:
+
+` usage: get_swc.py [-h] [--region R] [--neurons C] [--name N] [--index I]
+                  [--archive A] [--filters [FILTER]] [--search S]
+
+Access NeuroMorpho.org v7 w/ REST API and download SWC files
+
+optional arguments:
+  -h, --help          show this help message and exit
+  --region R          Brain region
+  --neurons C         Count of neurons (-1 means all)
+  --name N            Name of neuron
+  --index I           Index of neuron
+  --archive A         Archive name
+  --filters [FILTER]  One or multiple filters (OPTIONAL)
+  --search S          Search term `
+
+
 Most useful usage is probably the following to specify a search term and additional filters:
 
 `python get_swc.py --filter "cell_type=pyramidal" --neurons 10 --search "brain_region:neocortex" --filter "archive=Allen Cell Types"`
