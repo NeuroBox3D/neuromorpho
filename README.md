@@ -9,7 +9,8 @@ Making use of the REST API (NeuroMorpho.org v7) to query the database.
 
 ## Usage:
 
-` usage: get_swc.py [-h] [--region R] [--neurons C] [--name N] [--index I]
+```
+usage: get_swc.py [-h] [--region R] [--neurons C] [--name N] [--index I]
                   [--archive A] [--filters [FILTER]] [--search S]
 
 Access NeuroMorpho.org v7 w/ REST API and download SWC files
@@ -22,7 +23,8 @@ optional arguments:
   --index I           Index of neuron
   --archive A         Archive name
   --filters [FILTER]  One or multiple filters (OPTIONAL)
-  --search S          Search term `
+  --search S          Search term
+  ```
 
 
 Most useful usage is probably the following to specify a search term and additional filters:
