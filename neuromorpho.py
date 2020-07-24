@@ -90,6 +90,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
         pairs = pairs + [fq.replace(" ", "%20").split("=") for fq in filterString]
 
   url = url + "&".join(["fq=%s:%s" % (k, v) for (k, v) in pairs])
+  print(url)
   req = Request(url)
   response = urlopen(req)
   validate_response_code(response)
@@ -155,12 +156,15 @@ def get_swc_by_neuron_name(neuronName):
   """
   if (not check_api_health()): return
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
+  print("opening url: ")
+  print(url)
   html = urlopen(url).read()
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
+     print("done")
      open(fileName, 'w').write(response.read())
 
 
