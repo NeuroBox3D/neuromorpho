@@ -1,9 +1,9 @@
 """ Making use of the REST API (NeuroMorpho.org v7) to query the database """
 # python v2 or v3
 try:
-  from urllib2 import urlopen, Request
+  from urllib2 import urlopen, Request, URLError
 except ImportError:
-  from urllib.request import urlopen, Request
+  from urllib.request import urlopen, Request, URLError
 
 import re, json, base64, sys
 
@@ -40,11 +40,18 @@ def check_api_health():
   """
   url = "http://neuromorpho.org/api/health"
   req = Request(url)
-  response = urlopen(req)
-  if (json.loads(response.read())['status'].decode('utf-8') != "UP"):
+
+  try:
+    response = urlopen(req)
+    if (json.loads(response.read())['status'].decode('utf-8') != "UP"):
       print("REST API not available.")
       return False
-  return True
+    return True
+  except URLError:
+     print("""
+          No network connectivity. A working internet connection is required.
+          Check with ISP and/or your local network infrastructure for failure.
+          """)
 
 
 def get_num_neurons(numNeurons):
