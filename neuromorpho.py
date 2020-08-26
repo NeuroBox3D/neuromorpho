@@ -117,7 +117,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
         return neurons['_embedded']['neuronResources'][neuron]['neuron_name']
     # increase count here
     count = neuron + numNeurons
-  
+
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
   """ Downloads the neuron by index which matches filter criteria and search  term
   
