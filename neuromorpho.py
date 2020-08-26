@@ -5,7 +5,7 @@ try:
 except ImportError:
   from urllib.request import urlopen, Request, URLError
 
-import re, json, base64, sys
+import re, json, sys
 
 # pseudo-constants
 NEUROMORPHO_URL = "http://neuromorpho.org"
@@ -34,8 +34,7 @@ def validate_response_code(response):
 
 
 def check_api_health():
-  """ Checks if the REST API is available 
-
+  """ Checks if the REST API is available
   Returns true if API is available or false otherwise
   """
   url = "http://neuromorpho.org/api/health"
@@ -57,7 +56,6 @@ def check_api_health():
 def get_num_neurons(numNeurons):
   """
     Get number of neurons. API can handle only up to 500 neurons per page
-  
     Keyword arguments:
     numNeurons -- number of neurons
   """
@@ -89,7 +87,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
   url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm.replace("=", ":"))
 
   pairs = []
-  if (len(filterStringList) == 1): 
+  if (len(filterStringList) == 1):
     filterStringList.replace(" ", "%20")
     pairs = filterStringList.split("=")
   else:
@@ -204,8 +202,7 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
 
 
 def get_swc_by_archive_name(archiveName, numNeurons=-1):
-  """ Download a specific number of SWC files specified by an archive name 
-
+  """ Download a specific number of SWC files specified by an archive name
     Keyword arguments:
     archiveName -- the brain region
     numNeurons -- how many neurons to retrieve (-1 means all neurons)
