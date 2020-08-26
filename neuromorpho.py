@@ -12,8 +12,7 @@ NEUROMORPHO_URL = "http://neuromorpho.org"
 MAX_NEURONS_PER_PAGE = 500
 
 def validate_response_code(response):
-  """ Checks response code from JSON request and print warning then exits 
-
+  """ Checks response code from JSON request and print warning then exits
   Keyword arguments:
   response -- response of the issued JSON request
   """
@@ -76,7 +75,6 @@ def get_neuron_pages(numNeurons, totalPages):
 
 def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeurons, index=-1):
   """ Downloads n neurons by filterString and stores as SWC files
-  
   Keyword arguments:
   filterString -- the filter string as key value pairs
   searchTerm -- the search term
