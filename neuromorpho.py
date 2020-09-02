@@ -159,16 +159,14 @@ def get_swc_by_neuron_name(neuronName):
   """
   if (not check_api_health()): return
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
-  print("opening url: ")
-  print(url)
   html = urlopen(url).read()
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
-     print("done")
      open(fileName, 'w').write(response.read())
+  return fileName
 
 
 def get_swc_by_brain_region(brainRegion, numNeurons=-1):
