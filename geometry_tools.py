@@ -3,18 +3,18 @@
 
 import sys
 import os
-from read_swc import read_swc
 sys.path.insert(0, "externals")
 from csg.core import CSG
 from itertools import combinations
+from collections import namedtuple
 
-def check_cylinder_intersections(fileName):
+def check_cylinder_intersections(filename):
   """ Check if cylinder-cylinder intersections occur with CSG tools (BSP trees)
   
   Keyword arguments:
-  fileName -- the name of the file which should be checked for intersections
+  filename -- the name of the file which should be checked for intersections
   """
-  edges = read_swc(fileName)
+  edges = read_swc_to_edge_list(filename)
 
   for combination in combinations(range(0, len(edges), 2), 2):
     p1 = edges[combination[0]+0][0]
@@ -39,65 +39,59 @@ def check_cylinder_intersections(fileName):
     if (p1 == p2 or p3 == p4): continue
 
     # check for intersections
-    a = CSG.cylinder(radius=0.5*(d1+d2), start=p1, end=p2, slices=16)
-    b = CSG.cylinder(radius=0.5*(d3+d4), start=p3, end=p4, slices=16)
+    a = CSG.cylinder(radius=0.5*(d1+d2), start=p1, end=p2, slices=4)
+    b = CSG.cylinder(radius=0.5*(d3+d4), start=p3, end=p4, slices=4)
     polys = a.intersect(b)
 
     if polys.toPolygons():
       print(polys.toPolygons())
-      print("Cylinders intersect in neuron with name %s" % fileName)
+      print("Cylinders intersect in neuron with name %s" % filename)
       print("Cylinders: A (%f;%s;%s) and B(%f;%s;%s)" %(0.5*(d1+d2), p1, p2, 0.5*(d3+d4), p3, p4))
-      return
+      return True
 
   return False
 
-
-def read_swc(fileName):
+def read_swc_to_edge_list(filename):
     """ Read in a SWC file from Neuromorpho
   
      Keywords arguments:
-     fileName -- the file name corresponding to the SWC to be read
+     filename -- the file name corresponding to the SWC to be read
     """
-    edges = []
-    points = []
-    line = ""
-    lineCnt = 0
-    curInd = 0
-    indexMap = {}
-    diams = []
-    types = []
-    if not os.path.isfile(fileName):
-       print("File path {} does not exist. Exiting...".format(fileName))
-       sys.exit()
+    if not os.path.isfile(filename):
+       print("File path {} does not exist. Exiting...".format(filename))
+       sys.exit(1)
     
-    with open(fileName, "r") as f:
+    SWCPoint = namedtuple("SWCPoint", "index compartment x y z diam pid")
+    points = []
+    with open(filename, "r") as f:
       line = f.readline()
-      lineCnt = lineCnt + 1
       line = line.rstrip().lstrip()
-      
+
       while line:
         line = f.readline()
         # ignore empty lines
         if len(line) == 0: continue
+
         # ignore comments
         if line.startswith("#"): continue
-        # split
+
+        # split the current line
         splitted = line.split()
         if not len(splitted) == 7:
           print("Line {} does not contain 6 columns...".format("\t".join(splitted)))
-        
-        indexMap[int(splitted[0])] = curInd
-        points.append([float(splitted[2]), float(splitted[3]), float(splitted[4])])
-        diams.append(float(splitted[5]))
-        types.append(int(splitted[0]))
-        # 2, 3, 4 are x, y, z coordinates
-        # 6 is connection
-        conn = int(splitted[6])
-        if conn >= 0:
-          parentID = indexMap[conn]
-          parent = points[parentID]
-          diameter = diams[parentID]
-          t = types[parentID]
-          edges.append([points[conn], parent, diameter, t])
-        curInd = curInd + 1
+        else:
+          points.append(SWCPoint(*splitted))
+    
+    edges = []
+    for p in points:
+      # parent id
+      pid = int(p.pid) - 1
+      # root has no parent
+      if pid == -1: continue
+      # points list start at index 0, SWC starts at index 1, thus subtract 1 from pid
+      parent = points[pid-1]
+      # one edge whhich will be used to define a cylinder
+      edges.append([[float(p.x), float(p.y), float(p.z)], [float(parent.x), float(parent.y), 
+                    float(parent.z)], float(parent.diam), int(parent.compartment)])
     return edges
+
