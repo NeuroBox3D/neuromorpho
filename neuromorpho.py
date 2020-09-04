@@ -181,7 +181,7 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
     Note: Brain regions usually start in lowercase
   """
   if (not check_api_health()): return
-  if (not brainRegion[0].islower()): print "Warning: brain region does not start with lower case letter"
+  if (not brainRegion[0].islower()): print("Warning: brain region does not start with lower case letter")
   numNeurons = get_num_neurons(numNeurons)
   url = "%s/api/neuron/select?q=brain_region:%s&size=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons)
   req = Request(url)
