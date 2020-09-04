@@ -208,7 +208,7 @@ def get_swc_by_archive_name(archiveName, numNeurons=-1):
     Note: Archive names usually start in uppercase
   """
   if (not check_api_health()): return
-  if (not archiveName[0].isupper()): print "Warning: archive name does not start with upper case letter"
+  if (not archiveName[0].isupper()): print("Warning: archive name does not start with upper case letter")
   numNeurons = get_num_neurons(numNeurons)
   url = "%s/api/neuron/select?q=archive:%s&size=%i" %(NEUROMORPHO_URL, archiveName, numNeurons)
   req = Request(url)
