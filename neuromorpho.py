@@ -1,4 +1,4 @@
-""" Making use of the REST API (NeuroMorpho.org v7) to query the database """
+"""Making use of the REST API (NeuroMorpho.org v7) to query the database"""
 # python v2 or v3
 try:
   from urllib2 import urlopen, Request, URLError
@@ -13,6 +13,7 @@ MAX_NEURONS_PER_PAGE = 500
 
 def validate_response_code(response):
   """ Checks response code from JSON request and print warning then exits
+
   Keyword arguments:
   response -- response of the issued JSON request
   """
@@ -34,6 +35,7 @@ def validate_response_code(response):
 
 def check_api_health():
   """ Checks if the REST API is available
+
   Returns true if API is available or false otherwise
   """
   url = "http://neuromorpho.org/api/health"
@@ -51,10 +53,10 @@ def check_api_health():
           Check with ISP and/or your local network infrastructure for failure.
           """)
 
-
 def get_num_neurons(numNeurons):
   """
     Get number of neurons. API can handle only up to 500 neurons per page
+
     Keyword arguments:
     numNeurons -- number of neurons
   """
@@ -119,7 +121,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
     count = neuron + numNeurons
 
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
-  """ Downloads the neuron by index which matches filter criteria and search term
+  """Downloads the neuron by index which matches filter criteria and search term
 
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
@@ -152,7 +154,7 @@ def get_swc_by_neuron_index(neuronIndex):
 
 
 def get_swc_by_neuron_name(neuronName):
-  """ Download the SWC file specified by the neuron's name
+  """Download the SWC file specified by the neuron's name
 
     Keyword arguments:
     neuronName -- the neuron index in the database
@@ -170,7 +172,7 @@ def get_swc_by_neuron_name(neuronName):
 
 
 def get_swc_by_brain_region(brainRegion, numNeurons=-1):
-  """ Download a specific number of SWC files specified by a region name
+  """Download a specific number of SWC files specified by a region name
 
     Keyword arguments:
     brainRegion -- the brain region
@@ -198,7 +200,7 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
 
 
 def get_swc_by_archive_name(archiveName, numNeurons=-1):
-  """ Download a specific number of SWC files specified by an archive name
+  """Download a specific number of SWC files specified by an archive name
     Keyword arguments:
     archiveName -- the brain region
     numNeurons -- how many neurons to retrieve (-1 means all neurons)
