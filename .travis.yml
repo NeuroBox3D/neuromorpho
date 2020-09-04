@@ -1,17 +1,21 @@
 language: python
-
 matrix:
   include:
-    - os: linux
-      python: 2.7
-    - os: osx
-      language: generic
-      env: PYTHON=3.4
-
+  - os: linux
+    python: 2.7
+  - os: osx
+    language: generic
+    env: PYTHON=3.4
 before_install:
-  - chmod +x ./.travis/install.sh
-  - ./.travis/install.sh
-
-script: 
-  - chmod +x test_get_swc.py
-  - ./test_get_swc.py
+- chmod +x ./.travis/install.sh
+- "./.travis/install.sh"
+script:
+- chmod +x test_get_swc.py
+- "./test_get_swc.py"
+deploy:
+  provider: pypi
+  username: __token__
+  password:
+    secure: GOnvDc8tZpRAB+Yqumw+nlTYH8QTN2+XQ3WbDAjiVSdnsobLsjLXFeTyEjUZJ+HcCBRBlAMzzIRBk5zPokrIFVsOHvsL/eyKeZKDoYVqcpsoJkSUkByPEXDkD4PDaHURWI6iLhiFcowXG2qpza+/4Ol8uKDKVIFYMQWHd/C0cOL2HDUHRrPmxoKH8Nffnt6eGSMYoD6P2TSQxs21WqGOWoU6Ap1zp4OxnC55OnCxy9+gp48Jd5N54Rd7bCd3gpFNee8Bfu35dTH3o4VDWDYeoOnqk7m06co2miBkNRHcTn2LSOhuaQ5nV5+fNQNtROhH6WK99uP5gmQq+uFL1osOc1zlm/tQAda1EmdIT8O3XC1TfwJMTaJqI+kP5AD0lgspxF+pYH0i/ktRT74Qc6AHKfcXB9eg6ZWUrgMkspJZQMYWBLfbCv/+xk5ARPrJyu7Z2VGRwI8gehlBSOOiJkWEBOFHEm7y0tsil9UL7dX3YnkMHmQQg4nowD45HIo/NIF6heHT5gn+aMV9xVeJyL6Ij+30nm7O4bxZ+XVASdrXorFjS2NcKj5POTmCFxAmGuEJWY6Wj5583VIpaWkvJDdy7iOlHaDOp6BOADnXo48ThySc875UNT8kgyCPqIDap/KCMta77ub2suXM9Xp679VIezFYYjc/mN/Q/GnXV0UQN3A=
+  on:
+    tags: true

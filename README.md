@@ -1,4 +1,4 @@
-# Neuromorpho.org API
+# Python Wrapper for using the NeuroMorpho.org REST API
 Making use of the REST API (NeuroMorpho.org v7) to query the database for neurons 
 and download these as files in the SWC format. Note that the files are downloaded 
 to your current working directory: `pwd`. (The directory in which you call `get_swc.py`.
@@ -6,7 +6,8 @@ to your current working directory: `pwd`. (The directory in which you call `get_
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7934336da8264b259928f04288102a17)](https://app.codacy.com/gh/NeuroBox3D/neuromorpho?utm_source=github.com&utm_medium=referral&utm_content=NeuroBox3D/neuromorpho&utm_campaign=Badge_Grade_Dashboard)
  [![OSX/Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
 [![Windows](https://ci.appveyor.com/api/projects/status/j0t1orah829j2yca?svg=true)](https://ci.appveyor.com/project/stephanmg/neuromorpho)
- [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ [![PyPI version](https://badge.fury.io/py/neuromorpho.svg)](https://badge.fury.io/py/neuromorpho)
 
 ## Features
 - Get neurons matching a search term and additional filters (Usage Example 1 and 2)
