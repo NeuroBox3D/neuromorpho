@@ -22,13 +22,13 @@ def validate_response_code(response):
 
   # error codes
   if code == 400:
-      print "Bad request, usually wrong parameters to select queries."
+      print("Bad request, usually wrong parameters to select queries.")
   elif code == 404:
-      print "Resource not found or does not exist"
+      print("Resource not found or does not exist")
   elif code == 405:
-      print "Unsupported HTTP method used (No GET or POST request)."
+      print("Unsupported HTTP method used (No GET or POST request).")
   elif code == 500:
-      print "Internal Server Error. Contact admin for assistance."
+      print("Internal Server Error. Contact admin for assistance.")
   sys.exit()
 
 
@@ -119,8 +119,8 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
     count = neuron + numNeurons
 
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
-  """ Downloads the neuron by index which matches filter criteria and search  term
-  
+  """ Downloads the neuron by index which matches filter criteria and search term
+
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
   searchTerm -- the search term
