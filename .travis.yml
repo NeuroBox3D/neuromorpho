@@ -11,7 +11,7 @@ before_install:
 - "./.travis/install.sh"
 script:
 - git clone https://github.com/timknip/pycsg.git 
-- move pycsg externals
+- mv pycsg externals
 - python -m unittest discover -v
 deploy:
   provider: pypi
