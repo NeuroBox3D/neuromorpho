@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from geometry_tools.geometry_tools import *
+from geometry_tools.geometry_tools import check_cylinder_intersections
 import os
 import unittest
 

@@ -9,14 +9,14 @@ from itertools import combinations
 from collections import namedtuple
 
 def read_swc_to_edge_list(filename):
-    """ Read in a SWC file from Neuromorpho
+    """Read in a SWC file from Neuromorpho
      Keywords arguments:
      filename -- the file name corresponding to the SWC to be read
     """
     if not os.path.isfile(filename):
        print("File path {} does not exist. Exiting...".format(filename))
        sys.exit(1)
-    
+
     SWCPoint = namedtuple("SWCPoint", "index compartment x y z diam pid")
     points = []
     with open(filename, "r") as f:

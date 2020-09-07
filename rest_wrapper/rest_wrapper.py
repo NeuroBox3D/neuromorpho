@@ -12,7 +12,7 @@ NEUROMORPHO_URL = "http://neuromorpho.org"
 MAX_NEURONS_PER_PAGE = 500
 
 def validate_response_code(response):
-  """ Checks response code from JSON request and print warning then exits
+  """Checks response code from JSON request and print warning then exits
   Keyword arguments:
   response -- response of the issued JSON request
   """
@@ -33,7 +33,7 @@ def validate_response_code(response):
 
 
 def check_api_health():
-  """ Checks if the REST API is available
+  """Checks if the REST API is available
 
   Returns true if API is available or false otherwise
   """
@@ -76,6 +76,7 @@ def get_neuron_pages(numNeurons, totalPages):
 
 def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeurons, index=-1):
   """ Downloads n neurons by filterString and stores as SWC files
+
   Keyword arguments:
   filterString -- the filter string as key value pairs
   searchTerm -- the search term
@@ -121,6 +122,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
 
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
   """Downloads the neuron by index which matches filter criteria and search term
+
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
   searchTerm -- the search term
@@ -196,6 +198,7 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
 
 def get_swc_by_archive_name(archiveName, numNeurons=-1):
   """Download a specific number of SWC files specified by an archive name
+
     Keyword arguments:
     archiveName -- the brain region
     numNeurons -- how many neurons to retrieve (-1 means all neurons)
