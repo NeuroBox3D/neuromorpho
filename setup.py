@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='neuromorpho',
-     version='0.0.1-a0',
+     version='0.0.1-a1',
      scripts=['neuromorpho'] ,
      author="Stephan Grein",
      author_email="stephan@syntaktischer-zucker.de",
