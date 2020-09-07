@@ -8,7 +8,9 @@ environment:
       PYTHON_VERSION: 2.7
       PYTHON_ARCH: 32
 
+before_script:
+  - git clone "https://github.com/timknip/pycsg.git"
+  - move pcysg externals
+  
 build_script:
-  - ps: git clone "https://github.com/timknip/pycsg.git"
-  - ps: Rename-Item pcysg externals
-  - ps: python -m unittest discover -v
+  - python -m unittest discover -v
