@@ -10,7 +10,7 @@ environment:
 
 install:
   - git clone "https://github.com/timknip/pycsg.git"
-  - move pcysg externals
+  - move pycsg externals
   
 build_script:
   - python -m unittest discover -v
