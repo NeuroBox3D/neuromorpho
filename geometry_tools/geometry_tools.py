@@ -54,7 +54,7 @@ def read_swc_to_edge_list(filename):
 
 def check_cylinder_intersections(filename):
   """Check if cylinder-cylinder intersections occur with CSG tools (BSP trees)
-  
+
   Keyword arguments:
   filename -- the name of the file which should be checked for intersections
   """

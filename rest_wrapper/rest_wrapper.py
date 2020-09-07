@@ -53,8 +53,7 @@ def check_api_health():
           """)
 
 def get_num_neurons(numNeurons):
-  """
-    Get number of neurons. API can handle only up to 500 neurons per page
+  """Get number of neurons. API can handle only up to 500 neurons per page
 
     Keyword arguments:
     numNeurons -- number of neurons
@@ -133,6 +132,7 @@ def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm
 
 def get_swc_by_neuron_index(neuronIndex):
   """Download a neuron by index and store it into a SWC file
+
     Keyword arguments:
     neronIndex -- the neuron index in the database
   """
@@ -154,6 +154,7 @@ def get_swc_by_neuron_index(neuronIndex):
 
 def get_swc_by_neuron_name(neuronName):
   """Download the SWC file specified by the neuron's name
+
     Keyword arguments:
     neuronName -- the neuron index in the database
   """
@@ -171,6 +172,7 @@ def get_swc_by_neuron_name(neuronName):
 
 def get_swc_by_brain_region(brainRegion, numNeurons=-1):
   """Download a specific number of SWC files specified by a region name
+
     Keyword arguments:
     brainRegion -- the brain region
     numNeurons -- how many neurons to retrieved (-1 means all neurons)
@@ -194,7 +196,6 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
     numNeurons = len(neurons['_embedded']['neuronResources'])
     for neuron in xrange(0, numNeurons):
       get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
-
 
 def get_swc_by_archive_name(archiveName, numNeurons=-1):
   """Download a specific number of SWC files specified by an archive name
