@@ -5,7 +5,8 @@ import os
 import unittest
 
 class TestGeometryTools(unittest.TestCase):
-  def __compose_filename(self, filename, folder="data", extension=".swc", sep=os.path.sep):
+  @staticmethod
+  def __compose_filename(filename, folder="data", extension=".swc", sep=os.path.sep):
     return "%s%s%s%s" % (folder, sep, filename, extension)
 
   def test_linear_cylinder_without_intersection(self):
