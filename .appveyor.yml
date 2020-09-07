@@ -9,4 +9,6 @@ environment:
       PYTHON_ARCH: 32
 
 build_script:
-  - CALL test_get_swc.py
+  - ps: git clone https://github.com/timknip/pycsg.git
+  - ps: Rename-Item pcysg externals
+  - ps: python -m unittest discover -v

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from neuromorpho import *
+from rest_wrapper.rest_wrapper import *
 import unittest
 
-class TestGetSWCMethod(unittest.TestCase):
+class TestRestWrapper(unittest.TestCase):
   def test_get_swc_by_neuron_id(self):
     get_swc_by_neuron_index(1)
     num_lines = sum(1 for line in open('cnic_001.CNG.swc'))
@@ -24,8 +24,10 @@ class TestGetSWCMethod(unittest.TestCase):
     self.assertTrue(num_lines == 494, "SWC file incomplete!")
 
   def test_get_swc_by_filter_and_search_term(self):
-    filename = get_swc_by_filter_rule_for_search_term([["cell_type=pyramidal"], ["archive=Allen Cell Types"]], "brain_region:neocortex", -1, 1)
-    self.assertTrue("H16-03-002-01-03-03_559391969_m" == filename, "Wrong file retrieved!")
+    valid_filename = "H16-03-002-01-03-03_559391969_m"
+    filename = get_swc_by_filter_rule_for_search_term([["cell_type=pyramidal"], \
+               ["archive=Allen Cell Types"]], "brain_region:neocortex", -1, 1) 
+    self.assertTrue(valid_filename == filename, "Wrong file retrieved!")
 
 if __name__ == '__main__':
     unittest.main()

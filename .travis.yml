@@ -10,8 +10,9 @@ before_install:
 - chmod +x ./.travis/install.sh
 - "./.travis/install.sh"
 script:
-- chmod +x test_get_swc.py
-- "./test_get_swc.py"
+- git clone https://github.com/timknip/pycsg.git 
+- move pycsg externals
+- python -m unittest discover -v
 deploy:
   provider: pypi
   username: __token__

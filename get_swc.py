@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from neuromorpho import *
+from rest_wrapper.rest_wrapper import *
 import argparse
-from geometry_tools import check_cylinder_intersections
+from geometry_tools.geometry_tools import check_cylinder_intersections
 
 parser = argparse.ArgumentParser(description="Access NeuroMorpho.org v7 w/ REST API and download SWC files")
 parser.add_argument('--region', required=False, type=str, help="Brain region", metavar="R")
