@@ -9,6 +9,6 @@ environment:
       PYTHON_ARCH: 32
 
 build_script:
-  - ps: git clone https://github.com/timknip/pycsg.git
+  - ps: git clone "https://github.com/timknip/pycsg.git"
   - ps: Rename-Item pcysg externals
   - ps: python -m unittest discover -v
