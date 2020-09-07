@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 from geometry_tools.geometry_tools import *
 import os
 import unittest
@@ -20,7 +19,6 @@ class TestGeometryTools(unittest.TestCase):
   def test_bended_cylinder_with_intersection(self):
     filename = self.__compose_filename("linearCylindersBendedSharpAngle")
     self.assertTrue(check_cylinder_intersections(filename))
-    
 
 if __name__ == '__main__':
     unittest.main()

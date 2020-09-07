@@ -1,4 +1,4 @@
-"""Making use of the REST API (NeuroMorpho.org v7) to query the database"""
+"""Making use of the REST API (NeuroMorpho.org v7) to query the database."""
 # python v2 or v3
 try:
   from urllib2 import urlopen, Request, URLError
@@ -13,7 +13,6 @@ MAX_NEURONS_PER_PAGE = 500
 
 def validate_response_code(response):
   """ Checks response code from JSON request and print warning then exits
-
   Keyword arguments:
   response -- response of the issued JSON request
   """
@@ -122,7 +121,6 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
 
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
   """Downloads the neuron by index which matches filter criteria and search term
-
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
   searchTerm -- the search term
@@ -133,7 +131,6 @@ def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm
 
 def get_swc_by_neuron_index(neuronIndex):
   """Download a neuron by index and store it into a SWC file
-
     Keyword arguments:
     neronIndex -- the neuron index in the database
   """
@@ -155,7 +152,6 @@ def get_swc_by_neuron_index(neuronIndex):
 
 def get_swc_by_neuron_name(neuronName):
   """Download the SWC file specified by the neuron's name
-
     Keyword arguments:
     neuronName -- the neuron index in the database
   """
@@ -173,7 +169,6 @@ def get_swc_by_neuron_name(neuronName):
 
 def get_swc_by_brain_region(brainRegion, numNeurons=-1):
   """Download a specific number of SWC files specified by a region name
-
     Keyword arguments:
     brainRegion -- the brain region
     numNeurons -- how many neurons to retrieved (-1 means all neurons)
@@ -204,7 +199,6 @@ def get_swc_by_archive_name(archiveName, numNeurons=-1):
     Keyword arguments:
     archiveName -- the brain region
     numNeurons -- how many neurons to retrieve (-1 means all neurons)
-
     Note: Archive names usually start in uppercase
   """
   if (not check_api_health()): return

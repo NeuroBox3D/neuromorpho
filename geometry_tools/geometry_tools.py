@@ -10,7 +10,6 @@ from collections import namedtuple
 
 def read_swc_to_edge_list(filename):
     """ Read in a SWC file from Neuromorpho
-  
      Keywords arguments:
      filename -- the file name corresponding to the SWC to be read
     """
@@ -48,7 +47,7 @@ def read_swc_to_edge_list(filename):
       # points list start at index 0, SWC starts at index 1, thus subtract 1 from pid
       parent = points[pid-1]
       # one edge whhich will be used to define a cylinder
-      edges.append([[float(p.x), float(p.y), float(p.z)], [float(parent.x), float(parent.y), 
+      edges.append([[float(p.x), float(p.y), float(p.z)], [float(parent.x), float(parent.y),
                     float(parent.z)], float(parent.diam), int(parent.compartment)])
     return edges
 
