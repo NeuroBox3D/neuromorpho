@@ -1,1 +1,1 @@
-"""Rest wrapper"""
+"""Rest wrapper."""

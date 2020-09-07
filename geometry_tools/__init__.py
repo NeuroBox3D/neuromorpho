@@ -1,1 +1,1 @@
-"""Geometry tools"""
+"""Geometry tools."""

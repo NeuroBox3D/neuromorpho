@@ -37,7 +37,7 @@ def read_swc_to_edge_list(filename):
           print("Line {} does not contain 6 columns...".format("\t".join(splitted)))
         else:
           points.append(SWCPoint(*splitted))
-    
+
     edges = []
     for p in points:
       # parent id
@@ -53,7 +53,7 @@ def read_swc_to_edge_list(filename):
 
 
 def check_cylinder_intersections(filename):
-  """ Check if cylinder-cylinder intersections occur with CSG tools (BSP trees)
+  """Check if cylinder-cylinder intersections occur with CSG tools (BSP trees)
   
   Keyword arguments:
   filename -- the name of the file which should be checked for intersections
