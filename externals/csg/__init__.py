@@ -1,5 +1,6 @@
 # The MIT License (MIT)
-# 
+
+# Copyright (c) 2011 Evan Wallace (http://madebyevan.com/)
 # Copyright (c) 2015 Alexander Pletzer
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
