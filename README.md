@@ -1,4 +1,4 @@
-# Python Wrapper for using the NeuroMorpho.org REST API
+# Python Wrapper for the NeuroMorpho.org website
 
 The NeuroMorpho.org database is centrally curated inventory of reconstruttions of neurons which are associated with peer-reviewed publications. 
 The provided Python wrapper makes the interaction with the website through the NeuroMorpho.org v7 REST API available for procedural processing, 
