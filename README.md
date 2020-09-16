@@ -1,6 +1,6 @@
 # Python Wrapper for the NeuroMorpho.org website
 
-The NeuroMorpho.org database is centrally curated inventory of reconstruttions of neurons which are associated with peer-reviewed publications. 
+The NeuroMorpho.org database is centrally curated inventory of reconstructions of neurons which are associated with peer-reviewed publications. 
 The provided Python wrapper makes the interaction with the website through the NeuroMorpho.org v7 REST API available for procedural processing, 
 e.g. batch processing. The database can be queried, and neurons can be downloaded in the SWC file format. See `get_swc.py` or the examples below.
 Additionally consistency of the geometry can be checked with the `--validate` switch. This checks for self-intersections of the cylinders.
