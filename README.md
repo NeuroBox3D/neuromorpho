@@ -1,4 +1,4 @@
-# Python module for accessing NeuroMorpho.org database
+# Python module for accessing NeuroMorpho.org 
 
 The NeuroMorpho.org database is centrally curated inventory of reconstructions of neurons which are associated with peer-reviewed publications. 
 The provided Python wrapper makes the interaction with the website through the NeuroMorpho.org v7 REST API available for procedural processing, 
