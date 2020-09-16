@@ -1,7 +1,11 @@
 # Python Wrapper for using the NeuroMorpho.org REST API
-Making use of the REST API (NeuroMorpho.org v7) to query the database for neurons 
-and download these as files in the SWC format. Note that the files are downloaded 
-to your current working directory: `pwd`. (The directory in which you call `get_swc.py`.
+
+The NeuroMorpho.org database is centrally curated inventory of reconstruttions of neurons which are associated with peer-reviewed publications. 
+The provided Python wrapper makes the interaction with the website through the NeuroMorpho.org v7 REST API available for procedural processing, 
+e.g. batch processing. The database can be queried, and neurons can be downloaded in the SWC file format. See `get_swc.py` or the examples below.
+Additionally consistency of the geometry can be checked with the `--validate` switch. This checks for self-intersections of the cylinders.
+
+This Python wrapper depends only on the Python 2/3 standard libraries, so no additional dependencies are required to run it.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7934336da8264b259928f04288102a17)](https://app.codacy.com/gh/NeuroBox3D/neuromorpho?utm_source=github.com&utm_medium=referral&utm_content=NeuroBox3D/neuromorpho&utm_campaign=Badge_Grade_Dashboard)
  [![OSX/Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
