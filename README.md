@@ -7,7 +7,7 @@ Additionally consistency of the geometry can be checked with the `--validate` sw
 
 This Python wrapper depends only on the Python 2/3 standard libraries, so no additional dependencies are required to run it.
 
-First example can be found here: https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a
+First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a).
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7934336da8264b259928f04288102a17)](https://app.codacy.com/gh/NeuroBox3D/neuromorpho?utm_source=github.com&utm_medium=referral&utm_content=NeuroBox3D/neuromorpho&utm_campaign=Badge_Grade_Dashboard)
  [![OSX/Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
