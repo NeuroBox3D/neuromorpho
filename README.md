@@ -14,6 +14,8 @@ First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a
 [![Windows](https://ci.appveyor.com/api/projects/status/j0t1orah829j2yca?svg=true)](https://ci.appveyor.com/project/stephanmg/neuromorpho)
 [![License: MIT](https://img.shields.io/badge/License-MIT-magenta.svg)](https://opensource.org/licenses/MIT)
  [![PyPI version](https://badge.fury.io/py/neuromorpho.svg)](https://badge.fury.io/py/neuromorpho)
+ [![Python >=2.6](https://img.shields.io/badge/python-2.6-blue.svg)](https://www.python.org/downloads/release/python-260/)
+
 
 ## Features
 - Get neurons matching a search term and additional filters (Usage Example 1 and 2)
