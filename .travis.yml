@@ -3,14 +3,14 @@ matrix:
   include:
   - os: linux
     python: 2.7
+    dist:
+      - precise 
+      - xenial
+      - bionic
+      - focal
   - os: osx
     language: generic
     env: PYTHON=3.4
-  - dist:
-    - precise 
-    - xenial
-    - bionic
-    - focal
   
 before_install:
 - chmod +x ./.travis/install.sh
