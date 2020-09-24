@@ -2,28 +2,33 @@
 import unittest
 
 class TestRestWrapper(unittest.TestCase):
+  @staticmethod
+  def __num_lines(filename):
+    with open(filename, "r") as f:
+      return sum(1 for _ in f.readlines())
+
   def test_get_swc_by_neuron_id(self):
     from rest_wrapper.rest_wrapper import get_swc_by_neuron_index
     get_swc_by_neuron_index(1)
-    num_lines = sum(1 for line in open('cnic_001.CNG.swc'))
+    num_lines = self.__num_lines('cnic_001.CNG.swc')
     self.assertTrue(num_lines == 1281, "SWC file incomplete!")
 
   def test_get_swc_by_neuron_name(self):
     from rest_wrapper.rest_wrapper import get_swc_by_neuron_name
     get_swc_by_neuron_name("cnic_001")
-    num_lines = sum(1 for line in open('cnic_001.CNG.swc'))
+    num_lines = self.__num_lines('cnic_001.CNG.swc')
     self.assertTrue(num_lines == 1281, "SWC file incomplete!")
 
   def test_get_swc_by_brain_region(self):
     from rest_wrapper.rest_wrapper import get_swc_by_brain_region
     get_swc_by_brain_region("neocortex", 1)
-    num_lines = sum(1 for line in open('cnic_001.CNG.swc'))
+    num_lines = self.__num_lines('cnic_001.CNG.swc')
     self.assertTrue(num_lines == 1281, "SWC file incomplete!")
 
   def test_get_swc_by_archive_name(self):
     from rest_wrapper.rest_wrapper import get_swc_by_archive_name
     get_swc_by_archive_name("Smith", 1)
-    num_lines = sum(1 for line in open('0-2.CNG.swc'))
+    num_lines = self.__num_lines('0-2.CNG.swc')
     self.assertTrue(num_lines == 494, "SWC file incomplete!")
 
   def test_get_swc_by_filter_and_search_term(self):
