@@ -5,7 +5,7 @@ The provided Python wrapper makes the interaction with the website through the N
 e.g. batch processing. The database can be queried, and neurons can be downloaded in the SWC file format. See `get_swc.py` or the examples below.
 Additionally consistency of the geometry can be checked with the `--validate` switch. This checks for self-intersections of the cylindrical geometry in three-dimensional space.
 
-This Python wrapper depends only on the Python 2 standard libraries, so no additional dependencies are required to run it, except that Python >= 2.6 is required.
+This Python wrapper depends only on the Python 2 standard libraries, no 3rd party dependencies. Python >=2.6 is required.
 
 First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a).
 
