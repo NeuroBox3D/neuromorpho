@@ -84,9 +84,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
   n -- number of neurons
   """
   if (not check_api_health()): return
-
   url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm.replace("=", ":"))
-  print(url)
 
   pairs = []
   if (len(filterStringList) == 1):
@@ -97,7 +95,6 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
         pairs = pairs + [fq.replace(" ", "%20").split("=") for fq in filterString]
 
   url = url + "&".join(["fq=%s:%s" % (k, v) for (k, v) in pairs])
-  print(url)
   req = Request(url)
   response = urlopen(req)
   validate_response_code(response)
@@ -152,8 +149,8 @@ def get_swc_by_neuron_index(neuronIndex):
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
-     open(fileName, 'w').write(response.read())
-
+     with open(fileName, 'w') as f:
+        f.write(response.read())
 
 def get_swc_by_neuron_name(neuronName):
   """Download the SWC file specified by the neuron's name
@@ -169,7 +166,8 @@ def get_swc_by_neuron_name(neuronName):
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
-     open(fileName, 'w').write(response.read())
+     with open(fileName, 'w') as f:
+        f.write(response.read())
   return fileName
 
 
