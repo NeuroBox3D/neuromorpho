@@ -4,19 +4,14 @@ matrix:
   include:
   - dist: precise
     os: linux
-    python: 2.7
   - dist: trusty
     os: linux
-    python: 2.7
   - dist: xenial
     os: linux
-    python: 2.7
   - dist: bionic
     os: linux
-    python: 2.7
   - dist: focal
     os: linux
-    python: 2.7
   - os: osx
     language: generic
     env: PYTHON=3.4
