@@ -13,25 +13,8 @@ matrix:
   - dist: focal
     os: linux
   - os: osx
-    osx_image: xcode8
     language: generic
-    env: PYTHON=3.6
-  - os: osx
-    osx_image: xcode9
-    language: generic
-    env: PYTHON=3.6
-  - os: osx
-    osx_image: xcode10
-    language: generic
-    env: PYTHON=3.6
-  - os: osx
-    osx_image: xcode11
-    language: generic
-    env: PYTHON=3.6
-  - os: osx
-    osx_image: xcode12
-    language: generic
-    env: PYTHON=3.6
+    env: PYTHON=3.4
   
 before_install:
 - chmod +x ./.travis/install.sh
