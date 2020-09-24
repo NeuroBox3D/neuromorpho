@@ -33,5 +33,10 @@ class TestRestWrapper(unittest.TestCase):
                ["archive=Allen Cell Types"]], "brain_region:neocortex", -1, 1)
     self.assertTrue(valid_filename == filename, "Wrong file retrieved!")
 
+  def test_api_check(self):
+    from rest_wrapper.rest_wrapper import check_api_health
+    status = check_api_health()
+    self.assertIsNotNone(status, "API status could not be retrieved!")
+
 if __name__ == '__main__':
     unittest.main()

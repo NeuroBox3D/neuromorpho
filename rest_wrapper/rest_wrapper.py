@@ -42,15 +42,17 @@ def check_api_health():
 
   try:
     response = urlopen(req)
-    if (json.loads(response.read())['status'].decode('utf-8') != "UP"):
+    if (json.loads(response.read().decode('utf-8'))['status'] != "UP"):
       print("REST API not available.")
-      return False
-    return True
+    else:
+      return True
+    
   except URLError:
      print("""
           No network connectivity. A working internet connection is required.
           Check with ISP and/or your local network infrastructure for failure.
           """)
+  return False
 
 def get_num_neurons(numNeurons):
   """Get number of neurons. API can handle only up to 500 neurons per page
@@ -84,6 +86,7 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
   if (not check_api_health()): return
 
   url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, searchTerm.replace("=", ":"))
+  print(url)
 
   pairs = []
   if (len(filterStringList) == 1):
