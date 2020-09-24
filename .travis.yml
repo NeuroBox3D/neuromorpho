@@ -4,14 +4,9 @@ matrix:
   include:
   - dist: precise
     os: linux
-    python:
-      - "2.7"
-      - "3.6"
   - dist: trusty
     os: linux
     python:
-      - "2.7"
-      - "3.6"
   - dist: xenial
     os: linux
   - dist: bionic
@@ -19,7 +14,7 @@ matrix:
   - dist: focal
     os: linux
   - os: osx
-    osx_image: xcode9.4
+    osx_image: xcode9
     language: generic
     env: PYTHON=3.4
   - os: osx
