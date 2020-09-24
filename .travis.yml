@@ -13,6 +13,19 @@ matrix:
   - dist: focal
     os: linux
   - os: osx
+    osx_image: xcode9.4
+    language: generic
+    env: PYTHON=3.4
+  - os: osx
+    osx_image: xcode10
+    language: generic
+    env: PYTHON=3.4
+  - os: osx
+    osx_image: xcode11
+    language: generic
+    env: PYTHON=3.4
+  - os: osx
+    osx_image: xcode12
     language: generic
     env: PYTHON=3.4
   

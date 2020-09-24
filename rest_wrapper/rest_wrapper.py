@@ -150,7 +150,7 @@ def get_swc_by_neuron_index(neuronIndex):
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
      with open(fileName, 'w') as f:
-        f.write(response.read())
+        f.write(response.read().decode('utf-8'))
 
 def get_swc_by_neuron_name(neuronName):
   """Download the SWC file specified by the neuron's name
@@ -167,7 +167,7 @@ def get_swc_by_neuron_name(neuronName):
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
      with open(fileName, 'w') as f:
-        f.write(response.read())
+        f.write(response.read().decode('utf-8'))
   return fileName
 
 
