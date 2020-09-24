@@ -104,14 +104,14 @@ def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeur
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = get_neuron_pages(numNeurons, totalPages)
   count = 0
-  for page in xrange(0, numNeuronPages):
+  for page in range(0, numNeuronPages):
     url = url + "&size=%i&page=%i" % (numNeurons, page)
     req = Request(url)
     response = urlopen(req)
     neurons = json.loads(response.read().decode("utf-8"))
     numNeurons = len(neurons['_embedded']['neuronResources'])
     count = 0
-    for neuron in xrange(0, numNeurons):
+    for neuron in range(0, numNeurons):
       # get each file
       if index == -1: get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
@@ -146,7 +146,7 @@ def get_swc_by_neuron_index(neuronIndex):
   validate_response_code(response)
   neuronName = json.loads(response.read().decode("utf-8"))['neuron_name']
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read()
+  html = urlopen(url).read().decode("utf-8")
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
   for match in m:
@@ -163,7 +163,7 @@ def get_swc_by_neuron_name(neuronName):
   """
   if (not check_api_health()): return
   url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read()
+  html = urlopen(url).read().decode("utf-8")
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
   for match in m:
@@ -191,13 +191,13 @@ def get_swc_by_brain_region(brainRegion, numNeurons=-1):
   validate_response_code(response)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in xrange(0, numNeuronPages):
+  for page in range(0, numNeuronPages):
     url = "%s/api/neuron/select?q=brain_region:%s&size=%i&page=%i" %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
     req = Request(url)
     response = urlopen(req)
     neurons = json.loads(response.read().decode("utf-8"))
     numNeurons = len(neurons['_embedded']['neuronResources'])
-    for neuron in xrange(0, numNeurons):
+    for neuron in range(0, numNeurons):
       get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
 def get_swc_by_archive_name(archiveName, numNeurons=-1):
@@ -217,11 +217,11 @@ def get_swc_by_archive_name(archiveName, numNeurons=-1):
   validate_response_code(response)
   totalPages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
   numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in xrange(0, numNeuronPages):
+  for page in range(0, numNeuronPages):
     url = "%s/api/neuron/select?q=archive:%s&size=%i&page=%i" %(NEUROMORPHO_URL, archiveName, numNeurons, page)
     req = Request(url)
     response = urlopen(req)
     neurons = json.loads(response.read().decode("utf-8"))
     numNeurons = len(neurons['_embedded']['neuronResources'])
-    for neuron in xrange(0, numNeurons):
+    for neuron in range(0, numNeurons):
       get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
