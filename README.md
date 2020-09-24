@@ -5,7 +5,7 @@ The provided Python wrapper makes the interaction with the website through the N
 e.g. batch processing. The database can be queried, and neurons can be downloaded in the SWC file format. See `get_swc.py` or the examples below.
 Additionally consistency of the geometry can be checked with the `--validate` switch. This checks for self-intersections of the cylindrical geometry in three-dimensional space.
 
-Depends only on standard modules, no 3rd party dependencies. **Python >=2.6** is required however.
+Depends only on standard modules, no 3rd party dependencies. **Python >=2.5** is required however.
 
 First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a).
 
@@ -14,7 +14,7 @@ First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a
 [![Windows](https://ci.appveyor.com/api/projects/status/j0t1orah829j2yca?svg=true)](https://ci.appveyor.com/project/stephanmg/neuromorpho)
 [![License: MIT](https://img.shields.io/badge/License-MIT-magenta.svg)](https://opensource.org/licenses/MIT)
  [![PyPI version](https://badge.fury.io/py/neuromorpho.svg)](https://badge.fury.io/py/neuromorpho)
- [![Python >=2.6](https://img.shields.io/badge/python-2.6-blue.svg)](https://www.python.org/downloads/release/python-260/)
+ [![Python >=2.6](https://img.shields.io/badge/python-2.5-blue.svg)](https://www.python.org/downloads/release/python-250/)
 
 
 ## Features
