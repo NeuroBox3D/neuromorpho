@@ -26,12 +26,10 @@ elif (args.archive):
 elif (args.search):
     if args.index:
        fileName = get_swc_by_filter_rule_for_search_term(args.filters, args.search, 500, args.index)
-       print(fileName);
        if args.validate:
           print(check_cylinder_intersections(fileName))
     else:
        fileName = get_swc_by_filter_rule_for_search_term(args.filters, args.search, args.neurons, -1)
-       print(fileName)
        if args.validate:
           print(check_cylinder_intersections(fileName))
 elif (not args.region and ((args.index != None) ^ (args.name != None))):
