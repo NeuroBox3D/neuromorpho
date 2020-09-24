@@ -1,14 +1,15 @@
 language: python
 
-jobs:
-  include:
-   - dist: xenial
-   - dist: bionic
-   - dist: focal
-
 matrix:
   include:
-  - os: linux
+  - dist: xenial
+    os: linux
+    python: 2.7
+  - dist: bionic
+    os: linux
+    python: 2.7
+  - dist: focal
+    os: linux
     python: 2.7
   - os: osx
     language: generic
