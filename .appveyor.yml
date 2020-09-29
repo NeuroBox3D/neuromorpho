@@ -13,6 +13,10 @@ environment:
       PYTHON_VERSION: 2.7
       PYTHON_ARCH: 32
 
+    - PYTHON: "C:\\Python38"
+      PYTHON_VERSION: 3.8
+      PYTHON_ARCH: 32
+
 install:
   - git clone "https://github.com/timknip/pycsg.git"
   - move pycsg externals
