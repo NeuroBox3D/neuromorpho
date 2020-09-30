@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 import unittest
+import re
 
 class TestRestWrapper(unittest.TestCase):
   @staticmethod
   def __num_lines(filename):
     with open(filename, "r") as f:
-      return sum(1 for _ in f.readlines())
+      return sum(1 for line in f.readlines() if not re.match(r'^\s*$', line))
 
   def test_get_swc_by_neuron_id(self):
     from rest_wrapper.rest_wrapper import get_swc_by_neuron_index
