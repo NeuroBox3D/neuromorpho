@@ -163,11 +163,13 @@ def get_swc_by_neuron_name(neuronName):
   html = urlopen(url).read().decode("utf-8")
   p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
   m = re.findall(p, html)
+  fileName = None
   for match in m:
      fileName = match.replace("%20", " ").split("/")[-1]
      response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
      with open(fileName, 'w') as f:
         f.write(response.read().decode('utf-8'))
+  if (not fileName): print("Neuron with name %s not found in NeuroMorpho.org database." % neuronName)
   return fileName
 
 
