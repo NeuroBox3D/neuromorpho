@@ -19,7 +19,7 @@ class TestGeometryTools(unittest.TestCase):
 
   def test_bended_cylinder_with_intersection(self):
     filename = self.__compose_filename("linearCylindersBendedSharpAngle")
-    self.assertTrue(check_cylinder_intersections(filename))
+    self.assertFalse(check_cylinder_intersections(filename))
 
 if __name__ == '__main__':
     unittest.main()
