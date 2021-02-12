@@ -15,7 +15,7 @@ class TestGeometryTools(unittest.TestCase):
 
   def test_bended_cylinder_without_intersection(self):
     filename = self.__compose_filename("linearCylindersBended")
-    self.assertFalse(check_cylinder_intersections(filename))
+    self.assertTrue(check_cylinder_intersections(filename))
 
   def test_bended_cylinder_with_intersection(self):
     filename = self.__compose_filename("linearCylindersBendedSharpAngle")
