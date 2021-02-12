@@ -45,8 +45,8 @@ def read_swc_to_edge_list(filename):
       # root has no parent
       if pid == -1: continue
       # points list start at index 0, SWC starts at index 1, thus subtract 1 from pid
-      parent = points[pid-1]
-      # one edge whhich will be used to define a cylinder
+      parent = points[pid]
+      # one edge which will be used to define a cylinder
       edges.append([[float(p.x), float(p.y), float(p.z)], [float(parent.x), float(parent.y),
                     float(parent.z)], float(parent.diam), int(parent.compartment)])
     return edges
@@ -61,6 +61,43 @@ def check_cylinder_intersections(filename):
   edges = read_swc_to_edge_list(filename)
 
   numIntersections = 0
+  """
+  for i in range(0, len(edges)):
+    for j in range(0, len(edges)):
+        #print(str(j) + "--->" + str((j+1)))
+        #print(str(edges[j][0]) + "--->" + str(edges[j][1]))
+        # check for intersections
+        d1 = edges[i][2]
+        d2 = edges[i][2]
+        d3 = edges[j][2]
+        d4 = edges[j][2]
+
+        t1 = edges[i][3]
+        t2 = edges[i][3]
+        t3 = edges[j][3]
+        t4 = edges[j][3]
+
+        p1 = edges[i][0]
+        p2 = edges[i][1]
+        p3 = edges[j][0]
+        p4 = edges[j][1]
+
+        if (p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4): continue
+        if (t1 == 1 or t2 == 1 or t3 == 1 or t4 == 1): continue
+        if (p1 == p2 or p3 == p4): continue
+
+        a = CSG.cylinder(radius=0.5*(d1+d2), start=p1, end=p2, slices=4)
+        b = CSG.cylinder(radius=0.5*(d3+d4), start=p3, end=p4, slices=4)
+        polys = a.intersect(b)
+
+        if polys.toPolygons():
+           print(polys.toPolygons())
+           print("Cylinders intersect in neuron with name %s" % filename)
+           print("Cylinders: A (%f;%s;%s) and B(%f;%s;%s)" %(0.5*(d1+d2), p1, p2, 0.5*(d3+d4), p3, p4))
+           return False
+     
+  return
+  """
 
   for combination in combinations(range(0, len(edges)-2, 2), 2):
     p1 = edges[combination[0]+0][0]
