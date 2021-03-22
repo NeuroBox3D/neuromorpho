@@ -8,7 +8,7 @@ in three-dimensional space.
 
 Depends only on standard modules, no 3rd party dependencies. **Python >=2.5** is required however.
 
-First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a).
+A first example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a) and the API documentation [there](https://neurobox3d.github.io/neuromorpho/).
 
 ### Build status
 
