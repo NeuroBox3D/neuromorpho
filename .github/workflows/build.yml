@@ -27,7 +27,7 @@ jobs:
       run: ./scripts/build.sh
 
     - name: Make deploy script executable
-      run: chmod u+x scripts/build.sh
+      run: chmod u+x scripts/deploy.sh
 
     - name: Deploy 
       run: ./scripts/deploy.sh
