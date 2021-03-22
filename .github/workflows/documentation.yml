@@ -1,9 +1,5 @@
 name: Documentation
 
-on: [push]
-jobs:
-  build:
-
 on:
   push:
     branches-ignore: gh-pages
