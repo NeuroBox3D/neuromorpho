@@ -25,6 +25,8 @@ First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a
  [![Build](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/NeuroBox3D/neuromorpho)
 [![GitHub issues open](https://img.shields.io/github/issues/NeuroBox3D/neuromorpho)](https://github.com/NeuroBox3D/neuromorpho/issues)
+[![Documentation](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/documentation.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/documentation.yml)
+[![Build](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml)
 
 
 ## Features
