@@ -19,11 +19,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Make documentation script executable
+        run: chmod u+x scripts/documentation.sh
+
       - name: Build 🔨
         run: ./scripts/documentation.sh
     
-      - name: Make documentation  script executable
-        run: chmod u+x scripts/documentation.sh
 
       - name: Deploy Pdoc 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
