@@ -2,4 +2,4 @@
 
 pip install pdoc3
 
-pdoc .
+pdoc rest_wrapper
