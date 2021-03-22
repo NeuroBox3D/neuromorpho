@@ -10,16 +10,18 @@ Depends only on standard modules, no 3rd party dependencies. **Python >=2.5** is
 
 First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a3710da5d60888d0c701a).
 
+### Build status
+
+| Linux  | Windows | OSX |
+|---|---|---|
+|  [![Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho) | [![Windows](https://ci.appveyor.com/api/projects/status/j0t1orah829j2yca?svg=true)](https://ci.appveyor.com/project/stephanmg/neuromorpho) |  [![OSX](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho) |
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7934336da8264b259928f04288102a17)](https://app.codacy.com/gh/NeuroBox3D/neuromorpho?utm_source=github.com&utm_medium=referral&utm_content=NeuroBox3D/neuromorpho&utm_campaign=Badge_Grade_Dashboard)
 [![CodeQL](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/codeql-analysis.yml)
- [![Linux](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
- [![OSX](https://travis-ci.org/NeuroBox3D/neuromorpho.svg?branch=master)](https://travis-ci.org/NeuroBox3D/neuromorpho)
-[![Windows](https://ci.appveyor.com/api/projects/status/j0t1orah829j2yca?svg=true)](https://ci.appveyor.com/project/stephanmg/neuromorpho)
 [![License: MIT](https://img.shields.io/badge/License-MIT-magenta.svg)](https://opensource.org/licenses/MIT)
  [![PyPI version](https://badge.fury.io/py/neuromorpho.svg)](https://badge.fury.io/py/neuromorpho)
  [![Python >=2.6](https://img.shields.io/badge/python-2.5-blue.svg)](https://www.python.org/downloads/release/python-250/)
  [![Build](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml)
-
 
 ## Features
 - Get neurons matching a search term and additional filters (Usage Example 1 and 2)
