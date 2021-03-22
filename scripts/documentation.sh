@@ -2,5 +2,6 @@
 
 pip install pdoc3
 
-mkdir docs
-pdoc --html --output-dir docs rest_wrapper
+pdoc --html --output-dir temp rest_wrapper
+mv rest_wrapper docs
+
