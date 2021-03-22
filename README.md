@@ -22,6 +22,9 @@ First example can be found [here](https://gist.github.com/stephanmg/1bed6eba540a
  [![PyPI version](https://badge.fury.io/py/neuromorpho.svg)](https://badge.fury.io/py/neuromorpho)
  [![Python >=2.6](https://img.shields.io/badge/python-2.5-blue.svg)](https://www.python.org/downloads/release/python-250/)
  [![Build](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml/badge.svg)](https://github.com/NeuroBox3D/neuromorpho/actions/workflows/build.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/NeuroBox3D/neuromorpho)
+[![GitHub issues open](https://img.shields.io/github/issues/NeuroBox3D/neuromorpho)](https://github.com/NeuroBox3D/neuromorpho/issues)
+
 
 ## Features
 - Get neurons matching a search term and additional filters (Usage Example 1 and 2)
