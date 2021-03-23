@@ -46,7 +46,6 @@ def check_api_health():
       print("REST API not available.")
     else:
       return True
-    
   except URLError:
      print("""
           No network connectivity. A working internet connection is required.
