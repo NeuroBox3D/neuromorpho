@@ -9,6 +9,7 @@ from csg.core import CSG
 from itertools import combinations
 from collections import namedtuple
 
+
 def read_swc_to_edge_list(filename):
     """Read in a SWC file from Neuromorpho
      Keywords arguments:
@@ -47,7 +48,7 @@ def read_swc_to_edge_list(filename):
         if pid == -1: continue
         # points list start at index 0, SWC starts at index 1, thus subtract 1 from pid
         parent = points[pid - 1]
-        # one edge whhich will be used to define a cylinder
+        # one edge which will be used to define a cylinder
         edges.append([[float(p.x), float(p.y), float(p.z)], [float(parent.x), float(parent.y),
                                                              float(parent.z)], float(parent.diam),
                       int(parent.compartment)])
@@ -62,7 +63,7 @@ def check_cylinder_intersections(filename):
   """
     edges = read_swc_to_edge_list(filename)
 
-    numIntersections = 0
+    num_intersections = 0
 
     for combination in combinations(range(0, len(edges) - 2, 2), 2):
         p1 = edges[combination[0] + 0][0]
@@ -81,12 +82,12 @@ def check_cylinder_intersections(filename):
         t4 = edges[combination[1] + 1][3]
 
         # ignore soma cylinders (as they are error-prone)
-        if (t1 == 1 or t2 == 1 or t3 == 1 or t4 == 1): continue
+        if t1 == 1 or t2 == 1 or t3 == 1 or t4 == 1: continue
 
         # ignore self-loops (should actually never happen)
-        if (p1 == p2 or p3 == p4): continue
+        if p1 == p2 or p3 == p4: continue
         # ignore adjacent cylinders
-        if (p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4): continue
+        if p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4: continue
 
         # check for intersections
         a = CSG.cylinder(radius=0.5 * (d1 + d2), start=p1, end=p2, slices=4)
@@ -97,6 +98,6 @@ def check_cylinder_intersections(filename):
             print(polys.toPolygons())
             print("Cylinders intersect in neuron with name %s" % filename)
             print("Cylinders: A (%f;%s;%s) and B(%f;%s;%s)" % (0.5 * (d1 + d2), p1, p2, 0.5 * (d3 + d4), p3, p4))
-            numIntersections = numIntersections + 1
+            num_intersections = num_intersections + 1
 
-    return numIntersections > 0 and True or False
+    return num_intersections > 0 and True or False
