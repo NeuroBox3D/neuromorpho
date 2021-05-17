@@ -30,9 +30,9 @@
 <pre><code class="python">&#34;&#34;&#34;Making use of the REST API (NeuroMorpho.org v7) to query the database.&#34;&#34;&#34;
 # python v2 or v3
 try:
-  from urllib2 import urlopen, Request, URLError
+    from urllib2 import urlopen, Request, URLError
 except ImportError:
-  from urllib.request import urlopen, Request, URLError
+    from urllib.request import urlopen, Request, URLError
 
 import re, json, sys
 
@@ -40,219 +40,243 @@ import re, json, sys
 NEUROMORPHO_URL = &#34;http://neuromorpho.org&#34;
 MAX_NEURONS_PER_PAGE = 500
 
+
 def validate_response_code(response):
-  &#34;&#34;&#34;Checks response code from JSON request and print warning then exits
+    &#34;&#34;&#34;Checks response code from JSON request and print warning then exits
   Keyword arguments:
   response -- response of the issued JSON request
   &#34;&#34;&#34;
-  code = response.getcode()
-  # success
-  if code == 200: return
+    code = response.getcode()
+    # success
+    if code == 200: return
 
-  # error codes
-  if code == 400:
-      print(&#34;Bad request, usually wrong parameters to select queries.&#34;)
-  elif code == 404:
-      print(&#34;Resource not found or does not exist&#34;)
-  elif code == 405:
-      print(&#34;Unsupported HTTP method used (No GET or POST request).&#34;)
-  elif code == 500:
-      print(&#34;Internal Server Error. Contact admin for assistance.&#34;)
-  sys.exit()
+    # error codes
+    if code == 400:
+        print(&#34;Bad request, usually wrong parameters to select queries.&#34;)
+    elif code == 404:
+        print(&#34;Resource not found or does not exist&#34;)
+    elif code == 405:
+        print(&#34;Unsupported HTTP method used (No GET or POST request).&#34;)
+    elif code == 500:
+        print(&#34;Internal Server Error. Contact admin for assistance.&#34;)
+    sys.exit()
 
 
 def check_api_health():
-  &#34;&#34;&#34;Checks if the REST API is available
+    &#34;&#34;&#34;Checks if the REST API is available
 
   Returns true if API is available or false otherwise
   &#34;&#34;&#34;
-  url = &#34;http://neuromorpho.org/api/health&#34;
-  req = Request(url)
+    url = &#34;http://neuromorpho.org/api/health&#34;
+    req = Request(url)
 
-  try:
-    response = urlopen(req)
-    if (json.loads(response.read().decode(&#39;utf-8&#39;))[&#39;status&#39;] != &#34;UP&#34;):
-      print(&#34;REST API not available.&#34;)
-    else:
-      return True
-  except URLError:
-     print(&#34;&#34;&#34;
+    try:
+        response = urlopen(req)
+        if json.loads(response.read().decode(&#39;utf-8&#39;))[&#39;status&#39;] != &#34;UP&#34;:
+            print(&#34;REST API not available.&#34;)
+        else:
+            return True
+    except URLError:
+        print(&#34;&#34;&#34;
           No network connectivity. A working internet connection is required.
           Check with ISP and/or your local network infrastructure for failure.
           &#34;&#34;&#34;)
-  return False
+    return False
 
-def get_num_neurons(numNeurons):
-  &#34;&#34;&#34;Get number of neurons. API can handle only up to 500 neurons per page
+
+def get_num_neurons(num_neurons):
+    &#34;&#34;&#34;Get number of neurons. API can handle only up to 500 neurons per page
 
     Keyword arguments:
-    numNeurons -- number of neurons
+    num_neurons -- number of neurons
   &#34;&#34;&#34;
-  return numNeurons if (numNeurons != -1 and numNeurons &lt; MAX_NEURONS_PER_PAGE) else MAX_NEURONS_PER_PAGE
+    return num_neurons if (num_neurons != -1 and num_neurons &lt; MAX_NEURONS_PER_PAGE) else MAX_NEURONS_PER_PAGE
 
-def get_neuron_pages(numNeurons, totalPages):
-  &#34;&#34;&#34;
+
+def get_neuron_pages(num_neurons, total_pages):
+    &#34;&#34;&#34;
     Get the number of neuron pages. API handles up to 500 neurons per page.
     If more neurons than supported by the NeuroMorpho API (&gt; 500), then
     multiple pages need to be retrieved, otherwise one page is retrieved.
 
     Keyword arguments:
-    numNeurons -- number of neurons
-    totalPages -- number of pages available when using numNeurons per page
+    num_neurons -- number of neurons
+    total_pages -- number of pages available when using numNeurons per page
   &#34;&#34;&#34;
-  return min(totalPages, numNeurons / MAX_NEURONS_PER_PAGE if numNeurons &gt; MAX_NEURONS_PER_PAGE else 1)
+    return min(total_pages, num_neurons / MAX_NEURONS_PER_PAGE if num_neurons &gt; MAX_NEURONS_PER_PAGE else 1)
 
 
-def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeurons, index=-1):
-  &#34;&#34;&#34;Downloads n neurons by filterString and stores as SWC files
+def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_neurons, index=-1):
+    &#34;&#34;&#34;Downloads n neurons by filterString and stores as SWC files
 
   Keyword arguments:
-  filterString -- the filter string as key value pairs
-  searchTerm -- the search term
-  n -- number of neurons
+  filter_string_list -- the filter string as key value pairs
+  search_term-- the search term
+  num_neurons -- number of neurons
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/api/neuron/select?q=%s&amp;&#34; % (NEUROMORPHO_URL, searchTerm.replace(&#34;=&#34;, &#34;:&#34;))
+    if not check_api_health(): return
+    url = &#34;%s/api/neuron/select?q=%s&amp;&#34; % (NEUROMORPHO_URL, search_term.replace(&#34;=&#34;, &#34;:&#34;))
 
-  pairs = []
-  if (len(filterStringList) == 1):
-    filterStringList.replace(&#34; &#34;, &#34;%20&#34;)
-    pairs = filterStringList.split(&#34;=&#34;)
-  else:
-     for filterString in filterStringList:
-        pairs = pairs + [fq.replace(&#34; &#34;, &#34;%20&#34;).split(&#34;=&#34;) for fq in filterString]
+    pairs = []
+    if len(filter_string_list) == 1:
+        filter_string_list.replace(&#34; &#34;, &#34;%20&#34;)
+        pairs = filter_string_list.split(&#34;=&#34;)
+    else:
+        for filterString in filter_string_list:
+            pairs = pairs + [fq.replace(&#34; &#34;, &#34;%20&#34;).split(&#34;=&#34;) for fq in filterString]
 
-  url = url + &#34;&amp;&#34;.join([&#34;fq=%s:%s&#34; % (k, v) for (k, v) in pairs])
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  count = 0
-  for page in range(0, numNeuronPages):
-    url = url + &#34;&amp;size=%i&amp;page=%i&#34; % (numNeurons, page)
+    url = url + &#34;&amp;&#34;.join([&#34;fq=%s:%s&#34; % (k, v) for (k, v) in pairs])
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
     count = 0
-    for neuron in range(0, numNeurons):
-      # get each file
-      if index == -1: get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
+    for page in range(0, num_neuron_pages):
+        url = url + &#34;&amp;size=%i&amp;page=%i&#34; % (num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        count = 0
+        for neuron in range(0, num_neurons):
+            # get each file
+            if index == -1: get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
 
-      # get only file with index in this html view
-      if (neuron-count == index):
-        get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
-        return neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;]
-    # increase count here
-    count = neuron + numNeurons
+            # get only file with index in this html view
+            if neuron - count == index:
+                get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
+                return neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;]
+        # increase count here
+        count = neuron + num_neurons
+
 
 def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
-  &#34;&#34;&#34;Downloads the neuron by index which matches filter criteria and search term
+    &#34;&#34;&#34;Downloads the neuron by index which matches filter criteria and search term
 
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
   searchTerm -- the search term
   index -- index of neuron of interest
   &#34;&#34;&#34;
-  get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)
+    get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)
 
 
 def get_swc_by_neuron_index(neuronIndex):
-  &#34;&#34;&#34;Download a neuron by index and store it into a SWC file
+    &#34;&#34;&#34;Download a neuron by index and store it into a SWC file
 
     Keyword arguments:
     neronIndex -- the neuron index in the database
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/api/neuron/id/%i&#34; % (NEUROMORPHO_URL, neuronIndex)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  neuronName = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;neuron_name&#39;]
-  url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read().decode(&#34;utf-8&#34;)
-  p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
-  m = re.findall(p, html)
-  for match in m:
-     fileName = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
-     response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
-     with open(fileName, &#39;w&#39;) as f:
-        f.write(response.read().decode(&#39;utf-8&#39;))
+    if not check_api_health(): return
+    url = &#34;%s/api/neuron/id/%i&#34; % (NEUROMORPHO_URL, neuronIndex)
+    req = Request(url)
+    response = urlopen(req)
+    validate_response_code(response)
+    neuron_name = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;neuron_name&#39;]
+    url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuron_name)
+    html = urlopen(url).read().decode(&#34;utf-8&#34;)
+    p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
+    m = re.findall(p, html)
+    for match in m:
+        file_name = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
+        response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
+        with open(file_name, &#39;w&#39;) as f:
+            f.write(response.read().decode(&#39;utf-8&#39;))
 
-def get_swc_by_neuron_name(neuronName):
-  &#34;&#34;&#34;Download the SWC file specified by the neuron&#39;s name
+
+def get_swc_by_neuron_name(neuron_name):
+    &#34;&#34;&#34;Download the SWC file specified by the neuron&#39;s name
 
     Keyword arguments:
-    neuronName -- the neuron index in the database
+    neuron_name-- the neuron index in the database
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read().decode(&#34;utf-8&#34;)
-  p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
-  m = re.findall(p, html)
-  fileName = None
-  for match in m:
-     fileName = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
-     response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
-     with open(fileName, &#39;w&#39;) as f:
-        f.write(response.read().decode(&#39;utf-8&#39;))
-  if (not fileName): print(&#34;Neuron with name %s not found in NeuroMorpho.org database.&#34; % neuronName)
-  return fileName
+    if not check_api_health(): return
+    url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuron_name)
+    html = urlopen(url).read().decode(&#34;utf-8&#34;)
+    p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
+    m = re.findall(p, html)
+    file_name = None
+    for match in m:
+        file_name = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
+        response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
+        with open(file_name, &#39;w&#39;) as f:
+            f.write(response.read().decode(&#39;utf-8&#39;))
+    # check for file name presence in database
+    if not file_name:
+        print(&#34;Neuron with name %s not found in NeuroMorpho.org database.&#34; % neuron_name)
+        return
+
+    return file_name
 
 
-def get_swc_by_brain_region(brainRegion, numNeurons=-1):
-  &#34;&#34;&#34;Download a specific number of SWC files specified by a region name
+def get_swc_by_brain_region(brain_region, num_neurons=-1):
+    &#34;&#34;&#34;Download a specific number of SWC files specified by a region name
 
     Keyword arguments:
-    brainRegion -- the brain region
-    numNeurons -- how many neurons to retrieved (-1 means all neurons)
+    brain_region -- the brain region
+    num_neurons -- how many neurons to retrieved (-1 means all neurons)
 
     Note: Brain regions usually start in lowercase
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  if (not brainRegion[0].islower()): print(&#34;Warning: brain region does not start with lower case letter&#34;)
-  numNeurons = get_num_neurons(numNeurons)
-  url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&#34; %(NEUROMORPHO_URL, brainRegion, numNeurons)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in range(0, numNeuronPages):
-    url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&amp;page=%i&#34; %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
+    # check for API health
+    if not check_api_health():
+        return
+
+    # check if brain region found
+    if not brain_region[0].islower():
+        print(&#34;Warning: brain region does not start with lower case letter&#34;)
+        return
+
+    num_neurons = get_num_neurons(num_neurons)
+    url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&#34; % (NEUROMORPHO_URL, brain_region, num_neurons)
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
-    for neuron in range(0, numNeurons):
-      get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
+    for page in range(0, num_neuron_pages):
+        url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&amp;page=%i&#34; % (
+            NEUROMORPHO_URL, brain_region, num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        for neuron in range(0, num_neurons):
+            get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
 
-def get_swc_by_archive_name(archiveName, numNeurons=-1):
-  &#34;&#34;&#34;Download a specific number of SWC files specified by an archive name
+
+def get_swc_by_archive_name(archive_name, num_neurons=-1):
+    &#34;&#34;&#34;Download a specific number of SWC files specified by an archive name
 
     Keyword arguments:
-    archiveName -- the brain region
-    numNeurons -- how many neurons to retrieve (-1 means all neurons)
+    archive_name -- the brain region
+    num_neurons -- how many neurons to retrieve (-1 means all neurons)
     Note: Archive names usually start in uppercase
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  if (not archiveName[0].isupper()): print(&#34;Warning: archive name does not start with upper case letter&#34;)
-  numNeurons = get_num_neurons(numNeurons)
-  url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&#34; %(NEUROMORPHO_URL, archiveName, numNeurons)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in range(0, numNeuronPages):
-    url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&amp;page=%i&#34; %(NEUROMORPHO_URL, archiveName, numNeurons, page)
+    # check for API health
+    if not check_api_health():
+        return
+    # check for archive name in database
+    if not archive_name[0].isupper():
+        print(&#34;Warning: archive name does not start with upper case letter&#34;)
+        return
+
+    num_neurons = get_num_neurons(num_neurons)
+    url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&#34; % (NEUROMORPHO_URL, archive_name, num_neurons)
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
-    for neuron in range(0, numNeurons):
-      get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
+    for page in range(0, num_neuron_pages):
+        url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&amp;page=%i&#34; % (NEUROMORPHO_URL, archive_name, num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        for neuron in range(0, num_neurons):
+            get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
 </details>
 </section>
 <section>
@@ -273,211 +297,225 @@ def get_swc_by_archive_name(archiveName, numNeurons=-1):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def check_api_health():
-  &#34;&#34;&#34;Checks if the REST API is available
+    &#34;&#34;&#34;Checks if the REST API is available
 
   Returns true if API is available or false otherwise
   &#34;&#34;&#34;
-  url = &#34;http://neuromorpho.org/api/health&#34;
-  req = Request(url)
+    url = &#34;http://neuromorpho.org/api/health&#34;
+    req = Request(url)
 
-  try:
-    response = urlopen(req)
-    if (json.loads(response.read().decode(&#39;utf-8&#39;))[&#39;status&#39;] != &#34;UP&#34;):
-      print(&#34;REST API not available.&#34;)
-    else:
-      return True
-  except URLError:
-     print(&#34;&#34;&#34;
+    try:
+        response = urlopen(req)
+        if json.loads(response.read().decode(&#39;utf-8&#39;))[&#39;status&#39;] != &#34;UP&#34;:
+            print(&#34;REST API not available.&#34;)
+        else:
+            return True
+    except URLError:
+        print(&#34;&#34;&#34;
           No network connectivity. A working internet connection is required.
           Check with ISP and/or your local network infrastructure for failure.
           &#34;&#34;&#34;)
-  return False</code></pre>
+    return False</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_neuron_pages"><code class="name flex">
-<span>def <span class="ident">get_neuron_pages</span></span>(<span>numNeurons, totalPages)</span>
+<span>def <span class="ident">get_neuron_pages</span></span>(<span>num_neurons, total_pages)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the number of neuron pages. API handles up to 500 neurons per page.
 If more neurons than supported by the NeuroMorpho API (&gt; 500), then
 multiple pages need to be retrieved, otherwise one page is retrieved.</p>
 <p>Keyword arguments:
-numNeurons &ndash; number of neurons
-totalPages &ndash; number of pages available when using numNeurons per page</p></div>
+num_neurons &ndash; number of neurons
+total_pages &ndash; number of pages available when using numNeurons per page</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_neuron_pages(numNeurons, totalPages):
-  &#34;&#34;&#34;
+<pre><code class="python">def get_neuron_pages(num_neurons, total_pages):
+    &#34;&#34;&#34;
     Get the number of neuron pages. API handles up to 500 neurons per page.
     If more neurons than supported by the NeuroMorpho API (&gt; 500), then
     multiple pages need to be retrieved, otherwise one page is retrieved.
 
     Keyword arguments:
-    numNeurons -- number of neurons
-    totalPages -- number of pages available when using numNeurons per page
+    num_neurons -- number of neurons
+    total_pages -- number of pages available when using numNeurons per page
   &#34;&#34;&#34;
-  return min(totalPages, numNeurons / MAX_NEURONS_PER_PAGE if numNeurons &gt; MAX_NEURONS_PER_PAGE else 1)</code></pre>
+    return min(total_pages, num_neurons / MAX_NEURONS_PER_PAGE if num_neurons &gt; MAX_NEURONS_PER_PAGE else 1)</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_num_neurons"><code class="name flex">
-<span>def <span class="ident">get_num_neurons</span></span>(<span>numNeurons)</span>
+<span>def <span class="ident">get_num_neurons</span></span>(<span>num_neurons)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get number of neurons. API can handle only up to 500 neurons per page</p>
 <p>Keyword arguments:
-numNeurons &ndash; number of neurons</p></div>
+num_neurons &ndash; number of neurons</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_num_neurons(numNeurons):
-  &#34;&#34;&#34;Get number of neurons. API can handle only up to 500 neurons per page
+<pre><code class="python">def get_num_neurons(num_neurons):
+    &#34;&#34;&#34;Get number of neurons. API can handle only up to 500 neurons per page
 
     Keyword arguments:
-    numNeurons -- number of neurons
+    num_neurons -- number of neurons
   &#34;&#34;&#34;
-  return numNeurons if (numNeurons != -1 and numNeurons &lt; MAX_NEURONS_PER_PAGE) else MAX_NEURONS_PER_PAGE</code></pre>
+    return num_neurons if (num_neurons != -1 and num_neurons &lt; MAX_NEURONS_PER_PAGE) else MAX_NEURONS_PER_PAGE</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_archive_name"><code class="name flex">
-<span>def <span class="ident">get_swc_by_archive_name</span></span>(<span>archiveName, numNeurons=-1)</span>
+<span>def <span class="ident">get_swc_by_archive_name</span></span>(<span>archive_name, num_neurons=-1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download a specific number of SWC files specified by an archive name</p>
 <p>Keyword arguments:
-archiveName &ndash; the brain region
-numNeurons &ndash; how many neurons to retrieve (-1 means all neurons)
+archive_name &ndash; the brain region
+num_neurons &ndash; how many neurons to retrieve (-1 means all neurons)
 Note: Archive names usually start in uppercase</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_swc_by_archive_name(archiveName, numNeurons=-1):
-  &#34;&#34;&#34;Download a specific number of SWC files specified by an archive name
+<pre><code class="python">def get_swc_by_archive_name(archive_name, num_neurons=-1):
+    &#34;&#34;&#34;Download a specific number of SWC files specified by an archive name
 
     Keyword arguments:
-    archiveName -- the brain region
-    numNeurons -- how many neurons to retrieve (-1 means all neurons)
+    archive_name -- the brain region
+    num_neurons -- how many neurons to retrieve (-1 means all neurons)
     Note: Archive names usually start in uppercase
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  if (not archiveName[0].isupper()): print(&#34;Warning: archive name does not start with upper case letter&#34;)
-  numNeurons = get_num_neurons(numNeurons)
-  url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&#34; %(NEUROMORPHO_URL, archiveName, numNeurons)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in range(0, numNeuronPages):
-    url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&amp;page=%i&#34; %(NEUROMORPHO_URL, archiveName, numNeurons, page)
+    # check for API health
+    if not check_api_health():
+        return
+    # check for archive name in database
+    if not archive_name[0].isupper():
+        print(&#34;Warning: archive name does not start with upper case letter&#34;)
+        return
+
+    num_neurons = get_num_neurons(num_neurons)
+    url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&#34; % (NEUROMORPHO_URL, archive_name, num_neurons)
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
-    for neuron in range(0, numNeurons):
-      get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
+    for page in range(0, num_neuron_pages):
+        url = &#34;%s/api/neuron/select?q=archive:%s&amp;size=%i&amp;page=%i&#34; % (NEUROMORPHO_URL, archive_name, num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        for neuron in range(0, num_neurons):
+            get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_brain_region"><code class="name flex">
-<span>def <span class="ident">get_swc_by_brain_region</span></span>(<span>brainRegion, numNeurons=-1)</span>
+<span>def <span class="ident">get_swc_by_brain_region</span></span>(<span>brain_region, num_neurons=-1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download a specific number of SWC files specified by a region name</p>
 <p>Keyword arguments:
-brainRegion &ndash; the brain region
-numNeurons &ndash; how many neurons to retrieved (-1 means all neurons)</p>
+brain_region &ndash; the brain region
+num_neurons &ndash; how many neurons to retrieved (-1 means all neurons)</p>
 <p>Note: Brain regions usually start in lowercase</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_swc_by_brain_region(brainRegion, numNeurons=-1):
-  &#34;&#34;&#34;Download a specific number of SWC files specified by a region name
+<pre><code class="python">def get_swc_by_brain_region(brain_region, num_neurons=-1):
+    &#34;&#34;&#34;Download a specific number of SWC files specified by a region name
 
     Keyword arguments:
-    brainRegion -- the brain region
-    numNeurons -- how many neurons to retrieved (-1 means all neurons)
+    brain_region -- the brain region
+    num_neurons -- how many neurons to retrieved (-1 means all neurons)
 
     Note: Brain regions usually start in lowercase
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  if (not brainRegion[0].islower()): print(&#34;Warning: brain region does not start with lower case letter&#34;)
-  numNeurons = get_num_neurons(numNeurons)
-  url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&#34; %(NEUROMORPHO_URL, brainRegion, numNeurons)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  for page in range(0, numNeuronPages):
-    url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&amp;page=%i&#34; %(NEUROMORPHO_URL, brainRegion, numNeurons, page)
+    # check for API health
+    if not check_api_health():
+        return
+
+    # check if brain region found
+    if not brain_region[0].islower():
+        print(&#34;Warning: brain region does not start with lower case letter&#34;)
+        return
+
+    num_neurons = get_num_neurons(num_neurons)
+    url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&#34; % (NEUROMORPHO_URL, brain_region, num_neurons)
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
-    for neuron in range(0, numNeurons):
-      get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
+    for page in range(0, num_neuron_pages):
+        url = &#34;%s/api/neuron/select?q=brain_region:%s&amp;size=%i&amp;page=%i&#34; % (
+            NEUROMORPHO_URL, brain_region, num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        for neuron in range(0, num_neurons):
+            get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_filter_rule_for_search_term"><code class="name flex">
-<span>def <span class="ident">get_swc_by_filter_rule_for_search_term</span></span>(<span>filterStringList, searchTerm, numNeurons, index=-1)</span>
+<span>def <span class="ident">get_swc_by_filter_rule_for_search_term</span></span>(<span>filter_string_list, search_term, num_neurons, index=-1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Downloads n neurons by filterString and stores as SWC files</p>
 <p>Keyword arguments:
-filterString &ndash; the filter string as key value pairs
-searchTerm &ndash; the search term
-n &ndash; number of neurons</p></div>
+filter_string_list &ndash; the filter string as key value pairs
+search_term&ndash; the search term
+num_neurons &ndash; number of neurons</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, numNeurons, index=-1):
-  &#34;&#34;&#34;Downloads n neurons by filterString and stores as SWC files
+<pre><code class="python">def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_neurons, index=-1):
+    &#34;&#34;&#34;Downloads n neurons by filterString and stores as SWC files
 
   Keyword arguments:
-  filterString -- the filter string as key value pairs
-  searchTerm -- the search term
-  n -- number of neurons
+  filter_string_list -- the filter string as key value pairs
+  search_term-- the search term
+  num_neurons -- number of neurons
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/api/neuron/select?q=%s&amp;&#34; % (NEUROMORPHO_URL, searchTerm.replace(&#34;=&#34;, &#34;:&#34;))
+    if not check_api_health(): return
+    url = &#34;%s/api/neuron/select?q=%s&amp;&#34; % (NEUROMORPHO_URL, search_term.replace(&#34;=&#34;, &#34;:&#34;))
 
-  pairs = []
-  if (len(filterStringList) == 1):
-    filterStringList.replace(&#34; &#34;, &#34;%20&#34;)
-    pairs = filterStringList.split(&#34;=&#34;)
-  else:
-     for filterString in filterStringList:
-        pairs = pairs + [fq.replace(&#34; &#34;, &#34;%20&#34;).split(&#34;=&#34;) for fq in filterString]
+    pairs = []
+    if len(filter_string_list) == 1:
+        filter_string_list.replace(&#34; &#34;, &#34;%20&#34;)
+        pairs = filter_string_list.split(&#34;=&#34;)
+    else:
+        for filterString in filter_string_list:
+            pairs = pairs + [fq.replace(&#34; &#34;, &#34;%20&#34;).split(&#34;=&#34;) for fq in filterString]
 
-  url = url + &#34;&amp;&#34;.join([&#34;fq=%s:%s&#34; % (k, v) for (k, v) in pairs])
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  totalPages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
-  numNeuronPages = get_neuron_pages(numNeurons, totalPages)
-  count = 0
-  for page in range(0, numNeuronPages):
-    url = url + &#34;&amp;size=%i&amp;page=%i&#34; % (numNeurons, page)
+    url = url + &#34;&amp;&#34;.join([&#34;fq=%s:%s&#34; % (k, v) for (k, v) in pairs])
     req = Request(url)
     response = urlopen(req)
-    neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
-    numNeurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+    validate_response_code(response)
+    total_pages = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;page&#39;][&#39;totalPages&#39;]
+    num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
     count = 0
-    for neuron in range(0, numNeurons):
-      # get each file
-      if index == -1: get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
+    for page in range(0, num_neuron_pages):
+        url = url + &#34;&amp;size=%i&amp;page=%i&#34; % (num_neurons, page)
+        req = Request(url)
+        response = urlopen(req)
+        neurons = json.loads(response.read().decode(&#34;utf-8&#34;))
+        num_neurons = len(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;])
+        count = 0
+        for neuron in range(0, num_neurons):
+            # get each file
+            if index == -1: get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
 
-      # get only file with index in this html view
-      if (neuron-count == index):
-        get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
-        return neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;]
-    # increase count here
-    count = neuron + numNeurons</code></pre>
+            # get only file with index in this html view
+            if neuron - count == index:
+                get_swc_by_neuron_name(neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;])
+                return neurons[&#39;_embedded&#39;][&#39;neuronResources&#39;][neuron][&#39;neuron_name&#39;]
+        # increase count here
+        count = neuron + num_neurons</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_filter_rule_for_search_term_by_index"><code class="name flex">
@@ -494,14 +532,14 @@ index &ndash; index of neuron of interest</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm, index):
-  &#34;&#34;&#34;Downloads the neuron by index which matches filter criteria and search term
+    &#34;&#34;&#34;Downloads the neuron by index which matches filter criteria and search term
 
   Keyword arguments:
   filterStringList -- the filter string as key value pairs
   searchTerm -- the search term
   index -- index of neuron of interest
   &#34;&#34;&#34;
-  get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)</code></pre>
+    get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_neuron_index"><code class="name flex">
@@ -516,58 +554,62 @@ neronIndex &ndash; the neuron index in the database</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_swc_by_neuron_index(neuronIndex):
-  &#34;&#34;&#34;Download a neuron by index and store it into a SWC file
+    &#34;&#34;&#34;Download a neuron by index and store it into a SWC file
 
     Keyword arguments:
     neronIndex -- the neuron index in the database
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/api/neuron/id/%i&#34; % (NEUROMORPHO_URL, neuronIndex)
-  req = Request(url)
-  response = urlopen(req)
-  validate_response_code(response)
-  neuronName = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;neuron_name&#39;]
-  url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read().decode(&#34;utf-8&#34;)
-  p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
-  m = re.findall(p, html)
-  for match in m:
-     fileName = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
-     response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
-     with open(fileName, &#39;w&#39;) as f:
-        f.write(response.read().decode(&#39;utf-8&#39;))</code></pre>
+    if not check_api_health(): return
+    url = &#34;%s/api/neuron/id/%i&#34; % (NEUROMORPHO_URL, neuronIndex)
+    req = Request(url)
+    response = urlopen(req)
+    validate_response_code(response)
+    neuron_name = json.loads(response.read().decode(&#34;utf-8&#34;))[&#39;neuron_name&#39;]
+    url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuron_name)
+    html = urlopen(url).read().decode(&#34;utf-8&#34;)
+    p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
+    m = re.findall(p, html)
+    for match in m:
+        file_name = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
+        response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
+        with open(file_name, &#39;w&#39;) as f:
+            f.write(response.read().decode(&#39;utf-8&#39;))</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.get_swc_by_neuron_name"><code class="name flex">
-<span>def <span class="ident">get_swc_by_neuron_name</span></span>(<span>neuronName)</span>
+<span>def <span class="ident">get_swc_by_neuron_name</span></span>(<span>neuron_name)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download the SWC file specified by the neuron's name</p>
 <p>Keyword arguments:
-neuronName &ndash; the neuron index in the database</p></div>
+neuron_name&ndash; the neuron index in the database</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_swc_by_neuron_name(neuronName):
-  &#34;&#34;&#34;Download the SWC file specified by the neuron&#39;s name
+<pre><code class="python">def get_swc_by_neuron_name(neuron_name):
+    &#34;&#34;&#34;Download the SWC file specified by the neuron&#39;s name
 
     Keyword arguments:
-    neuronName -- the neuron index in the database
+    neuron_name-- the neuron index in the database
   &#34;&#34;&#34;
-  if (not check_api_health()): return
-  url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuronName)
-  html = urlopen(url).read().decode(&#34;utf-8&#34;)
-  p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
-  m = re.findall(p, html)
-  fileName = None
-  for match in m:
-     fileName = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
-     response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
-     with open(fileName, &#39;w&#39;) as f:
-        f.write(response.read().decode(&#39;utf-8&#39;))
-  if (not fileName): print(&#34;Neuron with name %s not found in NeuroMorpho.org database.&#34; % neuronName)
-  return fileName</code></pre>
+    if not check_api_health(): return
+    url = &#34;%s/neuron_info.jsp?neuron_name=%s&#34; % (NEUROMORPHO_URL, neuron_name)
+    html = urlopen(url).read().decode(&#34;utf-8&#34;)
+    p = re.compile(r&#39;&lt;a href=dableFiles/(.*)&gt;Morphology File \(Standardized\)&lt;/a&gt;&#39;, re.MULTILINE)
+    m = re.findall(p, html)
+    file_name = None
+    for match in m:
+        file_name = match.replace(&#34;%20&#34;, &#34; &#34;).split(&#34;/&#34;)[-1]
+        response = urlopen(&#34;%s/dableFiles/%s&#34; % (NEUROMORPHO_URL, match))
+        with open(file_name, &#39;w&#39;) as f:
+            f.write(response.read().decode(&#39;utf-8&#39;))
+    # check for file name presence in database
+    if not file_name:
+        print(&#34;Neuron with name %s not found in NeuroMorpho.org database.&#34; % neuron_name)
+        return
+
+    return file_name</code></pre>
 </details>
 </dd>
 <dt id="rest_wrapper.rest_wrapper.validate_response_code"><code class="name flex">
@@ -582,24 +624,24 @@ response &ndash; response of the issued JSON request</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validate_response_code(response):
-  &#34;&#34;&#34;Checks response code from JSON request and print warning then exits
+    &#34;&#34;&#34;Checks response code from JSON request and print warning then exits
   Keyword arguments:
   response -- response of the issued JSON request
   &#34;&#34;&#34;
-  code = response.getcode()
-  # success
-  if code == 200: return
+    code = response.getcode()
+    # success
+    if code == 200: return
 
-  # error codes
-  if code == 400:
-      print(&#34;Bad request, usually wrong parameters to select queries.&#34;)
-  elif code == 404:
-      print(&#34;Resource not found or does not exist&#34;)
-  elif code == 405:
-      print(&#34;Unsupported HTTP method used (No GET or POST request).&#34;)
-  elif code == 500:
-      print(&#34;Internal Server Error. Contact admin for assistance.&#34;)
-  sys.exit()</code></pre>
+    # error codes
+    if code == 400:
+        print(&#34;Bad request, usually wrong parameters to select queries.&#34;)
+    elif code == 404:
+        print(&#34;Resource not found or does not exist&#34;)
+    elif code == 405:
+        print(&#34;Unsupported HTTP method used (No GET or POST request).&#34;)
+    elif code == 500:
+        print(&#34;Internal Server Error. Contact admin for assistance.&#34;)
+    sys.exit()</code></pre>
 </details>
 </dd>
 </dl>
