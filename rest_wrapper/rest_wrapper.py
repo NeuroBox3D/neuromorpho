@@ -80,13 +80,14 @@ def get_neuron_pages(num_neurons, total_pages):
     return min(total_pages, num_neurons / MAX_NEURONS_PER_PAGE if num_neurons > MAX_NEURONS_PER_PAGE else 1)
 
 
-def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_neurons, index=-1):
+def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_neurons, index=-1, output_dir=""):
     """Downloads n neurons by filterString and stores as SWC files
 
   Keyword arguments:
   filter_string_list -- the filter string as key value pairs
   search_term-- the search term
   num_neurons -- number of neurons
+  output_dir: the output directory where the swc files will be written
   """
     if not check_api_health(): return
     url = "%s/api/neuron/select?q=%s&" % (NEUROMORPHO_URL, search_term.replace("=", ":"))
@@ -114,11 +115,11 @@ def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_
         for neuron in range(0, num_neurons):
             # get each file
             if index == -1: 
-                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'], output_dir=output_dir)
 
             # get only file with index in this html view
             if neuron - count == index:
-                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'], output_dir=output_dir)
                 return neurons['_embedded']['neuronResources'][neuron]['neuron_name']
         # increase count here
         count = neuron + num_neurons
@@ -135,7 +136,7 @@ def get_swc_by_filter_rule_for_search_term_by_index(filterStringList, searchTerm
     get_swc_by_filter_rule_for_search_term(filterStringList, searchTerm, -1, index)
 
 
-def get_swc_by_neuron_index(neuronIndex):
+def get_swc_by_neuron_index(neuronIndex, output_dir):
     """Download a neuron by index and store it into a SWC file
 
     Keyword arguments:
@@ -154,13 +155,13 @@ def get_swc_by_neuron_index(neuronIndex):
     p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
     m = re.findall(p, html)
     for match in m:
-        file_name = match.replace("%20", " ").split("/")[-1]
+        file_name = "%s/%s" % (output_dir, match.replace("%20", " ").split("/")[-1])
         reply = requests.get(url="%s/dableFiles/%s" % (NEUROMORPHO_URL, match), verify=False)
         with open(file_name, 'w') as f:
             f.write(reply.content.decode('utf-8'))
 
 
-def get_swc_by_neuron_name(directory, neuron_name):
+def get_swc_by_neuron_name(directory, neuron_name, output_dir):
     """Download the SWC file specified by the neuron's name
 
     Keyword arguments:
@@ -176,9 +177,9 @@ def get_swc_by_neuron_name(directory, neuron_name):
     for match in m:
         file_name = match.replace("%20", " ").split("/")[-1]
         reply = requests.get(url="%s/dableFiles/%s" % (NEUROMORPHO_URL, match), verify=False)
-        verify_directory(directory=directory)
+        verify_directory(directory="%s/%s" % (output_dir, directory))
         
-        with open('%s/%s' % (directory, file_name), 'w') as f:
+        with open('%s/%s/%s' % (output_dir, directory, file_name), 'w') as f:
             f.write(reply.content.decode("utf-8"))
             
     # check for file name presence in database
@@ -189,12 +190,13 @@ def get_swc_by_neuron_name(directory, neuron_name):
     return file_name
 
 
-def get_swc_by_brain_region(brain_region, num_neurons=-1):
+def get_swc_by_brain_region(brain_region, num_neurons=-1, output_dir=""):
     """Download a specific number of SWC files specified by a region name
 
     Keyword arguments:
     brain_region -- the brain region
     num_neurons -- how many neurons to retrieved (-1 means all neurons)
+    output_dir: the output directory where the swc files will be written
 
     Note: Brain regions usually start in lowercase
   """
@@ -220,15 +222,17 @@ def get_swc_by_brain_region(brain_region, num_neurons=-1):
         neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
-            get_swc_by_neuron_name(brain_region, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+            get_swc_by_neuron_name(brain_region, neurons['_embedded']['neuronResources'][neuron]['neuron_name'], output_dir=output_dir)
 
 
-def get_swc_by_archive_name(archive_name, num_neurons=-1):
+def get_swc_by_archive_name(archive_name, num_neurons=-1, output_dir=""):
     """Download a specific number of SWC files specified by an archive name
 
     Keyword arguments:
     archive_name -- the brain region
     num_neurons -- how many neurons to retrieve (-1 means all neurons)
+    output_dir: the output directory where the swc files will be written
+
     Note: Archive names usually start in uppercase
   """
     # check for API health
@@ -251,4 +255,4 @@ def get_swc_by_archive_name(archive_name, num_neurons=-1):
         neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
-            get_swc_by_neuron_name(archive_name, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+            get_swc_by_neuron_name(archive_name, neurons['_embedded']['neuronResources'][neuron]['neuron_name'], output_dir=output_dir)

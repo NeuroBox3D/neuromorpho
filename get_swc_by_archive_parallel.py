@@ -1,6 +1,7 @@
 import os
 import joblib
 import subprocess 
+import argparse
 
 
 def execute_command(shell_command):
@@ -17,11 +18,15 @@ def execute_commands_parallel(shell_commands):
     Parallel(n_jobs=os.cpu_count())(delayed(execute_command)(i) for i in shell_commands)
     
 
-def construct_command_per_archive(archive):
-    return "python3.8 get_swc.py --archive %s" % archive
+def construct_command_per_archive(archive, output_dir):
+    return "python3.8 get_swc.py --archive %s --output=%s" % (archive, output_dir)
 
 
 def main():
+    
+    parser = argparse.ArgumentParser(description="Parallel access NeuroMorpho.org v8.5 w/ REST API and download SWC files")
+    parser.add_argument('--output', required=True, type=str, help="The output directory where the results will be written")
+    args = parser.parse_args()
     
     archives = [
         "Abdolhoseini_Kluge",
@@ -996,7 +1001,7 @@ def main():
     
     commands = list()
     for archive in archives:
-        commands.append(construct_command_per_archive(archive=archive))
+        commands.append(construct_command_per_archive(archive=archive, output_dir=args.output))
     execute_commands_parallel(shell_commands=commands)
 
 if __name__ == "__main__":
