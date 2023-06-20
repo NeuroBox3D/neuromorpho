@@ -76,22 +76,22 @@ Get a neuron of this search term by index of total neurons matching the search c
 ### Example 3
 
 Get a neuron (Here: The first neuron in the database) by the global index (1) from the database:
-- `python get_SWC.py --index 1`
+- `python get_swc.py --index 1`
 
 ### Example 4
 
 Get a neuron by it's known name and download as SWC file:
-- `python get_SWC.py --name cnic_001`
+- `python get_swc.py --name cnic_001`
 
 ### Example 5
 
 The following will download *all* SWC files from the region *Neocortex* to the current working directory
-- `python get_SWC.py --region neocortex`
+- `python get_swc.py --region neocortex`
 
 and the following command will just download the first ten neurons from the *Neocortex* region.
-- `python get_SWC.py --region neocortex --neurons 10`
+- `python get_swc.py --region neocortex --neurons 10`
 
 ### Example 6
 
 To download a whole *Smith* archive in SWC format from the database, use the following commmand:
-- `python get_SWC.py --archive Smith` 
+- `python get_swc.py --archive Smith` 

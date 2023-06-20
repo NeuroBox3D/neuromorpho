@@ -1,7 +1,7 @@
 """Making use of the REST API (NeuroMorpho.org v7, and updated to v8.5) to query the database."""
 
-import re, sys, requests
-
+import re, sys, os, requests
+    
 # pseudo-constants
 NEUROMORPHO_URL = "http://neuromorpho.org"
 MAX_NEURONS_PER_PAGE = 500
@@ -13,6 +13,15 @@ try:
 except AttributeError:
     pass
 
+
+def verify_directory(directory):
+    """Verifies a directory.
+    """
+    
+    if not os.path.isdir(directory):
+        os.mkdir(directory)    
+        
+    
 
 def validate_response_code(response):
     """Checks response code from JSON request and print warning then exits
@@ -105,11 +114,11 @@ def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_
         for neuron in range(0, num_neurons):
             # get each file
             if index == -1: 
-                get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
             # get only file with index in this html view
             if neuron - count == index:
-                get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+                get_swc_by_neuron_name(search_term, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
                 return neurons['_embedded']['neuronResources'][neuron]['neuron_name']
         # increase count here
         count = neuron + num_neurons
@@ -151,7 +160,7 @@ def get_swc_by_neuron_index(neuronIndex):
             f.write(reply.content.decode('utf-8'))
 
 
-def get_swc_by_neuron_name(neuron_name):
+def get_swc_by_neuron_name(directory, neuron_name):
     """Download the SWC file specified by the neuron's name
 
     Keyword arguments:
@@ -167,7 +176,9 @@ def get_swc_by_neuron_name(neuron_name):
     for match in m:
         file_name = match.replace("%20", " ").split("/")[-1]
         reply = requests.get(url="%s/dableFiles/%s" % (NEUROMORPHO_URL, match), verify=False)
-        with open(file_name, 'w') as f:
+        verify_directory(directory=directory)
+        
+        with open('%s/%s' % (directory, file_name), 'w') as f:
             f.write(reply.content.decode("utf-8"))
             
     # check for file name presence in database
@@ -209,7 +220,7 @@ def get_swc_by_brain_region(brain_region, num_neurons=-1):
         neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
-            get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+            get_swc_by_neuron_name(brain_region, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
 
 def get_swc_by_archive_name(archive_name, num_neurons=-1):
@@ -227,7 +238,7 @@ def get_swc_by_archive_name(archive_name, num_neurons=-1):
     if not archive_name[0].isupper():
         print("Warning: archive name does not start with upper case letter")
         return
-
+    
     num_neurons = get_num_neurons(num_neurons)
     url = "%s/api/neuron/select?q=archive:%s&size=%i" % (NEUROMORPHO_URL, archive_name, num_neurons)
     reply = requests.get(url, verify=False)
@@ -240,4 +251,4 @@ def get_swc_by_archive_name(archive_name, num_neurons=-1):
         neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
-            get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+            get_swc_by_neuron_name(archive_name, neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
