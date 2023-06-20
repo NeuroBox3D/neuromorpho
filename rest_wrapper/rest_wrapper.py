@@ -1,15 +1,17 @@
-"""Making use of the REST API (NeuroMorpho.org v7) to query the database."""
-# python v2 or v3
-try:
-    from urllib2 import urlopen, Request, URLError
-except ImportError:
-    from urllib.request import urlopen, Request, URLError
+"""Making use of the REST API (NeuroMorpho.org v7, and updated to v8.5) to query the database."""
 
-import re, json, sys
+import re, sys, requests
 
 # pseudo-constants
 NEUROMORPHO_URL = "http://neuromorpho.org"
 MAX_NEURONS_PER_PAGE = 500
+
+requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+try:
+    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+except AttributeError:
+    pass
 
 
 def validate_response_code(response):
@@ -17,7 +19,7 @@ def validate_response_code(response):
   Keyword arguments:
   response -- response of the issued JSON request
   """
-    code = response.getcode()
+    code = response.status_code
     # success
     if code == 200: return
 
@@ -39,21 +41,13 @@ def check_api_health():
   Returns true if API is available or false otherwise
   """
     url = "http://neuromorpho.org/api/health"
-    req = Request(url)
-
-    try:
-        response = urlopen(req)
-        if json.loads(response.read().decode('utf-8'))['status'] != "UP":
-            print("REST API not available.")
-        else:
-            return True
-    except URLError:
-        print("""
-          No network connectivity. A working internet connection is required.
-          Check with ISP and/or your local network infrastructure for failure.
-          """)
-    return False
-
+    
+    reply = requests.get(url, verify=False)
+    if reply.json()['status'] != "UP":
+        print("REST API not available.")
+        return False
+    else:
+        return True
 
 def get_num_neurons(num_neurons):
     """Get number of neurons. API can handle only up to 500 neurons per page
@@ -97,22 +91,21 @@ def get_swc_by_filter_rule_for_search_term(filter_string_list, search_term, num_
             pairs = pairs + [fq.replace(" ", "%20").split("=") for fq in filterString]
 
     url = url + "&".join(["fq=%s:%s" % (k, v) for (k, v) in pairs])
-    req = Request(url)
-    response = urlopen(req)
-    validate_response_code(response)
-    total_pages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
+    reply = requests.get(url, verify=False)
+    validate_response_code(reply)
+    total_pages = reply.json()['page']['totalPages']
     num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
     count = 0
     for page in range(0, num_neuron_pages):
         url = url + "&size=%i&page=%i" % (num_neurons, page)
-        req = Request(url)
-        response = urlopen(req)
-        neurons = json.loads(response.read().decode("utf-8"))
+        reply = requests.get(url, verify=False)
+        neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         count = 0
         for neuron in range(0, num_neurons):
             # get each file
-            if index == -1: get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
+            if index == -1: 
+                get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
 
             # get only file with index in this html view
             if neuron - count == index:
@@ -141,19 +134,21 @@ def get_swc_by_neuron_index(neuronIndex):
   """
     if not check_api_health(): return
     url = "%s/api/neuron/id/%i" % (NEUROMORPHO_URL, neuronIndex)
-    req = Request(url)
-    response = urlopen(req)
-    validate_response_code(response)
-    neuron_name = json.loads(response.read().decode("utf-8"))['neuron_name']
+    reply = requests.get(url, verify=False)
+    
+    validate_response_code(reply)
+    
+    neuron_name = reply.json()['neuron_name']
     url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuron_name)
-    html = urlopen(url).read().decode("utf-8")
+    reply = requests.get(url, verify=False)
+    html = reply.content.decode("utf-8")
     p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
     m = re.findall(p, html)
     for match in m:
         file_name = match.replace("%20", " ").split("/")[-1]
-        response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
+        reply = requests.get(url="%s/dableFiles/%s" % (NEUROMORPHO_URL, match), verify=False)
         with open(file_name, 'w') as f:
-            f.write(response.read().decode('utf-8'))
+            f.write(reply.content.decode('utf-8'))
 
 
 def get_swc_by_neuron_name(neuron_name):
@@ -164,15 +159,17 @@ def get_swc_by_neuron_name(neuron_name):
   """
     if not check_api_health(): return
     url = "%s/neuron_info.jsp?neuron_name=%s" % (NEUROMORPHO_URL, neuron_name)
-    html = urlopen(url).read().decode("utf-8")
+    reply = requests.get(url, verify=False)
+    html = reply.content.decode('utf-8')
     p = re.compile(r'<a href=dableFiles/(.*)>Morphology File \(Standardized\)</a>', re.MULTILINE)
     m = re.findall(p, html)
     file_name = None
     for match in m:
         file_name = match.replace("%20", " ").split("/")[-1]
-        response = urlopen("%s/dableFiles/%s" % (NEUROMORPHO_URL, match))
+        reply = requests.get(url="%s/dableFiles/%s" % (NEUROMORPHO_URL, match), verify=False)
         with open(file_name, 'w') as f:
-            f.write(response.read().decode('utf-8'))
+            f.write(reply.content.decode("utf-8"))
+            
     # check for file name presence in database
     if not file_name:
         print("Neuron with name %s not found in NeuroMorpho.org database." % neuron_name)
@@ -201,17 +198,15 @@ def get_swc_by_brain_region(brain_region, num_neurons=-1):
 
     num_neurons = get_num_neurons(num_neurons)
     url = "%s/api/neuron/select?q=brain_region:%s&size=%i" % (NEUROMORPHO_URL, brain_region, num_neurons)
-    req = Request(url)
-    response = urlopen(req)
-    validate_response_code(response)
-    total_pages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
+    reply = requests.get(url, verify=False)
+    validate_response_code(reply)
+    total_pages = reply.json()['page']['totalPages']
     num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
     for page in range(0, num_neuron_pages):
         url = "%s/api/neuron/select?q=brain_region:%s&size=%i&page=%i" % (
             NEUROMORPHO_URL, brain_region, num_neurons, page)
-        req = Request(url)
-        response = urlopen(req)
-        neurons = json.loads(response.read().decode("utf-8"))
+        reply = requests.get(url, verify=False)
+        neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
             get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
@@ -235,16 +230,14 @@ def get_swc_by_archive_name(archive_name, num_neurons=-1):
 
     num_neurons = get_num_neurons(num_neurons)
     url = "%s/api/neuron/select?q=archive:%s&size=%i" % (NEUROMORPHO_URL, archive_name, num_neurons)
-    req = Request(url)
-    response = urlopen(req)
-    validate_response_code(response)
-    total_pages = json.loads(response.read().decode("utf-8"))['page']['totalPages']
+    reply = requests.get(url, verify=False)
+    validate_response_code(reply)
+    total_pages = reply.json()['page']['totalPages']
     num_neuron_pages = get_neuron_pages(num_neurons, total_pages)
     for page in range(0, num_neuron_pages):
         url = "%s/api/neuron/select?q=archive:%s&size=%i&page=%i" % (NEUROMORPHO_URL, archive_name, num_neurons, page)
-        req = Request(url)
-        response = urlopen(req)
-        neurons = json.loads(response.read().decode("utf-8"))
+        reply = requests.get(url, verify=False)
+        neurons = reply.json()
         num_neurons = len(neurons['_embedded']['neuronResources'])
         for neuron in range(0, num_neurons):
             get_swc_by_neuron_name(neurons['_embedded']['neuronResources'][neuron]['neuron_name'])
